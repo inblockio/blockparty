@@ -1,5 +1,9 @@
+import "./stylesheets/normalize.css";
 import "./stylesheets/app.css";
 import 'react-notifications/lib/notifications.css';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { withStyles } from '@material-ui/core/styles';
+
 import React from 'react';
 import EventEmitter from 'event-emitter';
 import ReactDOM from 'react-dom';
@@ -15,10 +19,17 @@ import Participants from './components/Participants';
 import NetworkLabel from './components/NetworkLabel';
 import Data from './components/Data';
 
+
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
+
 import Avatar from 'material-ui/Avatar';
 import AppBar from 'material-ui/AppBar';
+
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+
 import FlatButton from 'material-ui/FlatButton';
 import $ from 'jquery';
 
@@ -35,7 +46,7 @@ function setup(){
       web3.version.getNetwork(function(err, network_id){
         resolve({web3, provider, read_only, network_id})
       })
-    }else{
+    } else {
       provider = new Web3.providers.HttpProvider(url);
       let web3 = new Web3();             // Define and instantiate `web3` if accessed from web browser
       $.get(url, function(res){
@@ -74,6 +85,7 @@ function setup(){
 window.onload = function() {
   setup().then(({provider, web3, read_only, network_id}) => {
     var env;
+
     switch (network_id) {
       case '1':
         env = 'mainnet';
@@ -87,11 +99,13 @@ window.onload = function() {
       default:
         env = 'development';
     }
+
     var network_obj = require('../app_config.js')[env];
     var Conference  = TruffleContract(artifacts);
     let contract, contractAddress;
     Conference.setProvider(provider);
     Conference.setNetwork(network_id);
+
     try {
       if (network_obj.contract_addresses['Conference']) {
         contract = Conference.at(network_obj.contract_addresses['Conference']);
@@ -102,6 +116,7 @@ window.onload = function() {
       console.log("ERROR")
       console.log(e)
     }
+
     if (contract){
       contractAddress = contract.address;
     }else{
@@ -221,12 +236,14 @@ window.onload = function() {
           })
         })
     }
+
     var gas = 1000000;
     // default gas price
     window.gasPrice = web3.toWei(3, 'gwei');
     $.get('https://ethgasstation.info/json/ethgasAPI.json', function(res){
       window.gasPrice = web3.toWei(res.safeLow / 10, 'gwei'); // for some reason the gast price is 10 times more expensive the one displayed on the web page.
     })
+
     window.eventEmitter = eventEmitter;
     function action(name, address, args) {
       var options = {from:address, gas:gas, gasPrice:window.gasPrice }
@@ -281,32 +298,74 @@ window.onload = function() {
         eventEmitter.emit('accounts_received', accs)
       })
     }
+
     let networkLabel = <NetworkLabel eventEmitter={eventEmitter} read_only={read_only} />;
 
+    const styles = theme => ({
+      layout: {
+        width: 'auto',
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+      },
+    });
+
     const App = (props) => (
+
       <div>
         <MuiThemeProvider muiTheme={getMuiTheme()}>
-          <div>
-            <AppBar titleStyle={{textAlign:'center', fontSize:'xx-large', fontFamily:'Lobster'}} style={{backgroundColor:"#607D8B"}}
-              title={
-                <span>Block Party<span style={{fontSize:'small', fontFamily:'sans-serif'}}> - NO BLOCK NO PARTY -</span></span>
-              }
-              iconElementLeft={<Avatar src={require('./images/nightclub-white.png')} size={50} backgroundColor="rgb(96, 125, 139)" />}
-              iconElementRight={
-                <span>
-                  {networkLabel}
-                  <FlatButton style={{color:'white'}} label="About" onClick={ () => {eventEmitter.emit('instruction')}} />
-                </span>
-              }
-            />
+          <div style={{overflow: 'hidden', maxWidth: '1440px', margin: 'auto'}}> {/*TO DO*/}
+            <header className="header align-center"> 
+              <AppBar
+                titleStyle={{textAlign:'center', fontSize:'xx-large', fontFamily:'Lobster'}}
+                title={
+                  <span style={{fontSize:'small', fontFamily:'sans-serif'}}>
 
-            <Instruction eventEmitter={eventEmitter} />
-            <Notification eventEmitter={eventEmitter} />
-            <div className='container' class='foo'>
-              <ConferenceDetail eventEmitter={eventEmitter} getDetail={getDetail} web3={web3} contract={contract} web3={web3} contractAddress={contractAddress} />
-              <Participants eventEmitter={eventEmitter} getDetail={getDetail} getParticipants={getParticipants} getAccounts={getAccounts} action={action} web3={web3}  />
-            </div>
-            <FormInput read_only={read_only} eventEmitter={eventEmitter} getAccounts={getAccounts} getDetail={getDetail} action={action} />
+                  </span>
+                }
+                iconElementLeft={<Avatar src={require('./images/nightclub-white.png')} size={50} />}
+                iconElementRight={
+                  <span>
+                    {networkLabel}
+                    <FlatButton style={{color:'white'}} label="About" onClick={ () => {eventEmitter.emit('instruction')}} />
+                  </span>
+                }
+              />
+             <Typography variant="display2" style={{color: '#fff', maxWidth: '450px', marginLeft: '30px'}}>
+                RChain Cooperative
+                Developer Conference
+              </Typography>
+
+
+            </header>
+
+              <Instruction eventEmitter={ eventEmitter } />
+              <Notification eventEmitter={ eventEmitter } />
+
+              <Divider />
+              <Grid container spacing={ 16 } justify="space-between"  style={{padding: '0 20px'}}>
+                <Grid item xs="12" md="5" className="xs-order-2">
+                  <Participants
+                    eventEmitter={ eventEmitter }
+                    getDetail={ getDetail }
+                    getParticipants={ getParticipants }
+                    web3={ web3 }
+                    getAccounts={ getAccounts }
+                    action={ action }
+                    contract={ contract }
+                    contractAddress={ contractAddress }  />
+                </Grid>
+                <Grid item xs="12" md="5">
+                  <ConferenceDetail
+                    eventEmitter={ eventEmitter }
+                    getDetail={ getDetail }
+                    web3={ web3 }
+                    contract={ contract }
+                    contractAddress={ contractAddress }
+                    />
+                </Grid>
+              </Grid>
+
+              <FormInput read_only={ read_only } eventEmitter={ eventEmitter } getAccounts={ getAccounts } getDetail={ getDetail } action={ action } />
           </div>
         </MuiThemeProvider>
       </div>

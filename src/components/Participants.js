@@ -1,9 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {List, ListItem} from 'material-ui/List';
-import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
-import Paper from 'material-ui/Paper';
+
+import Paper from '@material-ui/core//Paper';
+import Card from '@material-ui/core/Card';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
+
+import FlatButton from 'material-ui/FlatButton';
+
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import Avatar from 'material-ui/Avatar';
 import IconButton from 'material-ui/IconButton';
@@ -15,14 +21,60 @@ import participantStatus from '../util/participantStatus';
 import NameSearch from './NameSearch';
 import QRCode from './QRCode';
 
+import PeopleIcon from 'material-ui/svg-icons/social/people';
+
+import $ from 'jquery';
+
 const getTwitterIcon = (name) =>(
   <Avatar style={{verticalAlign:'middle'}} src={`https://avatars.io/twitter/${name}`} size={26} />
 )
+
+const getEtherIcon = () =>(
+  <Avatar src={require('../images/ethereum.ico')} size={ 26 } backgroundColor="white" />
+)
+
+const getDepositIcon = (name) =>(
+  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/deposit.svg")} size={26} />
+)
+
+const getTotalPot = (name) =>(
+  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/total_pot.svg")} size={26} />
+)
+
+const getTotalPerPerson = (name) =>(
+  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/total_per_person.svg")} size={26} />
+)
+
+const getPersons = (name) =>(
+  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/persons.svg")} size={26} />
+)
+
 
 const styles = {
   paperRight:{
     flex: 3,
     textAlign: 'center',
+  },
+
+  item: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '22px 10px 10px 50px',
+  },
+
+  card: {
+    paddingTop: '40px',
+    boxShadow: 'none',
+  },
+
+  btn: {
+    borderRadius: '10px',
+    backgroundColor: 'transparent',
+    textTransform: 'uppercase'
+  },
+
+  row: {
+    border: 'none'
   }
 };
 
@@ -36,11 +88,12 @@ class Participants extends React.Component {
       participants:[],
       attendees:[],
       detail:{},
-      etherscan_url:null
+      etherscan_url:null,
+      isDetails: false
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     // Initialize
     this.props.getParticipants(participants =>{
       this.setState({participants});
@@ -56,21 +109,24 @@ class Participants extends React.Component {
         this.setState({participants});
       });
     });
+
     this.props.eventEmitter.on('accounts_received', accounts => {
       this.setState({
         address:accounts[0],
         accounts:accounts
       })
     });
+
     this.props.eventEmitter.on('detail', detail => {
       this.setState({detail:detail});
-    })
+    });
 
     this.props.eventEmitter.on('network', network => {
       this.setState({
         etherscan_url: network.etherscan_url
       });
-    })
+    });
+
     this.props.eventEmitter.on('attendees', attendees => {
       // Resets after clicking 'attend' button.
       if(attendees.length != this.state.attendees.length){
@@ -79,6 +135,21 @@ class Participants extends React.Component {
         })
       }
     });
+
+    // If the app failed to get detail from contract (meaning either connecting
+    // to wrong network or the contract id does not match to the one deployed),
+    // it will show instruction page.
+    setTimeout(function(){
+      if(typeof(this.state.name) == 'undefined'){
+        this.props.eventEmitter.emit('instruction');
+      }
+    }.bind(this), 5000)
+
+    this.serverRequest = $.get('https://coinmarketcap-nexuist.rhcloud.com/api/eth', function (result) {
+      this.setState({
+        rate: math.round((result.price.gbp / 20), 2).toString()
+      });
+    }.bind(this));
   }
 
   isAdmin(){
@@ -89,17 +160,24 @@ class Participants extends React.Component {
     return this.state.accounts.includes(participant.address);
   }
 
+  toEther(value) {
+    if(value){
+      // return math.round(this.props.web3.fromWei(value, "ether").toNumber(), 3).toString();
+      return this.props.web3.fromWei(value, "ether").toString();
+    }
+  }
+
   toNumber(value){
     if(value) return value.toNumber();
   }
 
-  handleSearchField(event){
+  handleSearchField(event) {
     this.setState({
       keyword: event.target.value
     });  
   }
 
-  handleAttendees(participantAddress, event, isInputChecked){
+  handleAttendees(participantAddress, event, isInputChecked) {
     if (isInputChecked) {
       this.state.attendees.push(participantAddress)
     }else{
@@ -111,9 +189,9 @@ class Participants extends React.Component {
     return true;
   }
 
-  yesNo(participant){
+  yesNo(participant) {
     if(participant.attended) {
-      return 'Yes';
+      return ( <Avatar src={require('../images/сheck.svg')} size={ 26 } backgroundColor="white" /> );
     }else{
       if(this.isAdmin() && !this.state.detail.ended){
         return (
@@ -122,12 +200,12 @@ class Participants extends React.Component {
           />
         )
       }else{
-        return '';
+        return ( <Avatar src={require('../images/cross.svg')} size={ 26 } backgroundColor="white" /> );
       }
     }
   }
 
-  displayBalance(participant){
+  displayBalance(participant) {
     var message = participantStatus(participant, this.state.detail);
     console.log('status', message);
     let color, amount;
@@ -160,7 +238,11 @@ class Participants extends React.Component {
     )
   }
 
-  displayParticipants(){
+  showDetails() {
+    console.log('show')
+  }
+
+  displayParticipants() {
     if(!this.state.detail.name) return(
       <TableRowColumn width={100} >
         <p>
@@ -178,7 +260,8 @@ class Participants extends React.Component {
         </p>
       </TableRowColumn>
     )
-    if(this.state.participants.length > 0){
+
+    if(this.state.participants.length > 0) {
       var state = this.state;
       return this.state.participants.map((participant) => {
         if(state.keyword && state.keyword.length >=3){
@@ -202,22 +285,26 @@ class Participants extends React.Component {
             `${participant.address.slice(0,5)}...`
           )
         }
-        let rowStyle = {};
+        let rowStyle = {
+          border: 'none'
+        };
+
         if (!participant.matched){
           rowStyle.display ='none';
         }
         return (
           <TableRow  style={rowStyle} >
-            <TableRowColumn width={50}>
+            <TableRowColumn style={{ width: '60%'}}>
               {getTwitterIcon(participant.name)}
               <span style={{paddingLeft:'1em'}}><a target='_blank' href={ `https://twitter.com/${participant.name}` }>{participant.role}{participant.name}</a> </span>
                 ({participantAddress})
               </TableRowColumn>
-            <TableRowColumn width={10} >{this.yesNo(participant)}</TableRowColumn>
-            <TableRowColumn width={20} >
-              <span>
+            <TableRowColumn style={{ width: '20%'}} >{this.yesNo(participant)}</TableRowColumn>
+            <TableRowColumn style={{ width: '20%'}} >
+              {/*<span>
                 { this.displayBalance(participant) }
-              </span>
+              </span>*/}
+              <FlatButton label="Show" secondary={true} onClick={ this.showDetails } style={ styles.card } />
             </TableRowColumn>
           </TableRow>
         )
@@ -227,20 +314,95 @@ class Participants extends React.Component {
     }
   }
 
+  getDepositContent( deposit, rate ) {
+    if(deposit){
+      return (
+        <span style={ styles.list }> ETH { this.toEther( deposit ) }</span>
+      )
+    }else{
+      return (
+        <span style={ styles.list }>No info available</span>
+      )
+    }
+  }
+
   render() {
     return (
-      <Paper zDepth={1} style={styles.paperRight}>
-          <h4>Participants</h4>
+      <Card style={ styles.card }>
+          <Typography variant="display1" align="center" className="mb-3">Participants</Typography>
 
-          <NameSearch  eventEmitter={this.props.eventEmitter} />
-          <QRCode  eventEmitter={this.props.eventEmitter} />
+          {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
+          <QRCode  eventEmitter={this.props.eventEmitter} />*/}
+
+          <List>
+            <ListItem 
+            leftIcon={ getDepositIcon() }
+            disabled={ true }
+            style={ styles.item }
+            primaryText={
+              <span>DEPOSIT </span>
+            }
+            secondaryText={
+              <span styles={{ color: '#5F5F5F'}}> ETH 0.02</span>
+            }
+          />
+
+          <ListItem
+            style={ styles.item }
+            leftIcon={ getTotalPot() }
+            disabled={ true }
+            primaryText={
+              <span>TOTAL POT</span>
+            }
+            secondaryText={
+              <span styles={{ color: '#5F5F5F' }}>0.046153846153846164</span>
+            }
+          />
+
+          <ListItem
+            style={ styles.item }
+            leftIcon={ getTotalPerPerson() }
+            disabled={true}
+            primaryText={
+              <span>TOTAL PAYOUT PER PERSON </span>
+            }
+            secondaryText={
+              <span styles={{ color: '#5F5F5F'}}>ETH 0.0023</span>
+            }
+          />
+
+          <ListItem
+            style={ styles.item }
+            leftIcon={ getPersons() }
+            disabled={true}
+            primaryText={
+              <span>MAXIMUM AMOUNT OF REGISTRATIONs</span>
+            }
+            secondaryText={
+              <span styles={{ color: '#5F5F5F'}}>45</span>
+            }
+          />
+
+          <ListItem
+            style={ styles.item }
+            leftIcon={ getPersons() }
+            disabled={true}
+            primaryText={
+              <span>AMOUNT OF ATTENDEES</span>
+            }
+            secondaryText={
+              <span styles={{ color: '#5F5F5F'}}>36</span>
+            }
+          />
+
+          </List>
 
           <Table>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-              <TableRow>
-                <TableHeaderColumn width={50} >Name</TableHeaderColumn>
-                <TableHeaderColumn width={10} >Attended</TableHeaderColumn>
-                <TableHeaderColumn width={20} >Payout</TableHeaderColumn>
+              <TableRow style={{ border: 'none' }}>
+                <TableHeaderColumn style={{ width: '60%'}} ></TableHeaderColumn>
+                <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
+                <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
@@ -248,7 +410,7 @@ class Participants extends React.Component {
             </TableBody>
           </Table>
           <p style={{color:'grey', fontSize:'small'}}>Note: admins are marked as *</p>
-      </Paper>
+      </Card>
     );
   }
 }
