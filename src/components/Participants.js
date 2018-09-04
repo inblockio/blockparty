@@ -1,86 +1,52 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
 
-import Paper from '@material-ui/core//Paper';
+import { List, ListItem } from 'material-ui/List';
 import Card from '@material-ui/core/Card';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-
 import FlatButton from 'material-ui/FlatButton';
-
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Avatar from 'material-ui/Avatar';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
-import math from 'mathjs';
+
 import participantStatus from '../util/participantStatus';
 import NameSearch from './NameSearch';
 import QRCode from './QRCode';
 
-import PeopleIcon from 'material-ui/svg-icons/social/people';
-
+import math from 'mathjs';
 import $ from 'jquery';
 
 const getTwitterIcon = (name) =>(
   <Avatar style={{verticalAlign:'middle'}} src={`https://avatars.io/twitter/${name}`} size={26} />
 )
 
-const getEtherIcon = () =>(
-  <Avatar src={require('../images/ethereum.ico')} size={ 26 } backgroundColor="white" />
-)
-
-const getDepositIcon = (name) =>(
-  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/deposit.svg")} size={26} />
-)
-
-const getTotalPot = (name) =>(
-  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/total_pot.svg")} size={26} />
-)
-
-const getTotalPerPerson = (name) =>(
-  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/total_per_person.svg")} size={26} />
-)
-
-const getPersons = (name) =>(
-  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/persons.svg")} size={26} />
-)
-
 
 const styles = {
-  paperRight:{
-    flex: 3,
-    textAlign: 'center',
-  },
-
-  item: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '22px 10px 10px 50px',
-  },
-
   card: {
     paddingTop: '40px',
     boxShadow: 'none',
   },
 
   btn: {
-    borderRadius: '10px',
+    borderRadius: '7px',
     backgroundColor: 'transparent',
-    textTransform: 'uppercase'
-  },
-
-  row: {
-    border: 'none'
+    textTransform: 'uppercase',
+    color: '#32A1E4',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    borderColor: '#32A1E4',
+    fontSize: '11px',
+    padding: '0 5px',
+    minWidth: '40px',
+    height: '24px',
+    lineHeight: '24px'
   }
 };
 
 class Participants extends React.Component {
-  constructor(props) {
-    super(props);
+
+  constructor( props ) {
+    super( props );
+
     this.state = {
       accounts:[],
       keyword: null,
@@ -95,18 +61,18 @@ class Participants extends React.Component {
 
   componentDidMount() {
     // Initialize
-    this.props.getParticipants(participants =>{
-      this.setState({participants});
+    this.props.getParticipants( participants =>{
+      this.setState({ participants });
     });
 
-    this.props.eventEmitter.on('search', keyword => {
+    this.props.eventEmitter.on( 'search', keyword => {
       this.setState({ keyword: keyword });
     });
 
-    this.props.eventEmitter.on('change', _ => {
+    this.props.eventEmitter.on( 'change', _ => {
       console.log('CHANGE', _);
       this.props.getParticipants(participants =>{
-        this.setState({participants});
+        this.setState({ participants });
       });
     });
 
@@ -118,7 +84,7 @@ class Participants extends React.Component {
     });
 
     this.props.eventEmitter.on('detail', detail => {
-      this.setState({detail:detail});
+      this.setState({ detail:detail });
     });
 
     this.props.eventEmitter.on('network', network => {
@@ -135,37 +101,22 @@ class Participants extends React.Component {
         })
       }
     });
-
-    // If the app failed to get detail from contract (meaning either connecting
-    // to wrong network or the contract id does not match to the one deployed),
-    // it will show instruction page.
-    setTimeout(function(){
-      if(typeof(this.state.name) == 'undefined'){
-        this.props.eventEmitter.emit('instruction');
-      }
-    }.bind(this), 5000)
-
-    this.serverRequest = $.get('https://coinmarketcap-nexuist.rhcloud.com/api/eth', function (result) {
-      this.setState({
-        rate: math.round((result.price.gbp / 20), 2).toString()
-      });
-    }.bind(this));
   }
 
   isAdmin(){
-    return this.state.detail.admins.includes(this.state.address) || (this.state.detail.owner == this.state.address);
+    return this.state.detail.admins.includes( this.state.address ) || ( this.state.detail.owner == this.state.address );
   }
 
-  isUser(participant){
-    return this.state.accounts.includes(participant.address);
+  isUser( participant ){
+    return this.state.accounts.includes( participant.address );
   }
 
-  toEther(value) {
-    if(value){
-      // return math.round(this.props.web3.fromWei(value, "ether").toNumber(), 3).toString();
-      return this.props.web3.fromWei(value, "ether").toString();
-    }
-  }
+  // toEther(value) {
+  //   if(value){
+  //     // return math.round(this.props.web3.fromWei(value, "ether").toNumber(), 3).toString();
+  //     return this.props.web3.fromWei(value, "ether").toString();
+  //   }
+  // }
 
   toNumber(value){
     if(value) return value.toNumber();
@@ -238,13 +189,9 @@ class Participants extends React.Component {
     )
   }
 
-  showDetails() {
-    console.log('show')
-  }
-
   displayParticipants() {
     if(!this.state.detail.name) return(
-      <TableRowColumn width={100} >
+      <TableRowColumn width={ 100 }>
         <p>
           <h5>No info available.</h5>
           The reason are more likely to be one of the followings.
@@ -263,6 +210,7 @@ class Participants extends React.Component {
 
     if(this.state.participants.length > 0) {
       var state = this.state;
+
       return this.state.participants.map((participant) => {
         if(state.keyword && state.keyword.length >=3){
           let keyword = state.keyword.toLowerCase();
@@ -296,15 +244,17 @@ class Participants extends React.Component {
           <TableRow  style={rowStyle} >
             <TableRowColumn style={{ width: '60%'}}>
               {getTwitterIcon(participant.name)}
-              <span style={{paddingLeft:'1em'}}><a target='_blank' href={ `https://twitter.com/${participant.name}` }>{participant.role}{participant.name}</a> </span>
+              <span style={{paddingLeft:'1em'}}>
+                <a target='_blank' href={ `https://twitter.com/${participant.name}` }>{participant.role} {participant.name}</a>
+              </span>
                 ({participantAddress})
               </TableRowColumn>
             <TableRowColumn style={{ width: '20%'}} >{this.yesNo(participant)}</TableRowColumn>
             <TableRowColumn style={{ width: '20%'}} >
               {/*<span>
                 { this.displayBalance(participant) }
-              </span>*/}
-              <FlatButton label="Show" secondary={true} onClick={ this.showDetails } style={ styles.card } />
+              </span> It's important part*/}
+              <FlatButton secondary={true} onClick={ this.showDetails } style={ styles.btn } children={ <span>details</span> }/>
             </TableRowColumn>
           </TableRow>
         )
@@ -314,91 +264,14 @@ class Participants extends React.Component {
     }
   }
 
-  getDepositContent( deposit, rate ) {
-    if(deposit){
-      return (
-        <span style={ styles.list }> ETH { this.toEther( deposit ) }</span>
-      )
-    }else{
-      return (
-        <span style={ styles.list }>No info available</span>
-      )
-    }
-  }
-
   render() {
     return (
       <Card style={ styles.card }>
-          <Typography variant="display1" align="center" className="mb-3">Participants</Typography>
-
           {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
           <QRCode  eventEmitter={this.props.eventEmitter} />*/}
 
-          <List>
-            <ListItem 
-            leftIcon={ getDepositIcon() }
-            disabled={ true }
-            style={ styles.item }
-            primaryText={
-              <span>DEPOSIT </span>
-            }
-            secondaryText={
-              <span styles={{ color: '#5F5F5F'}}> ETH 0.02</span>
-            }
-          />
-
-          <ListItem
-            style={ styles.item }
-            leftIcon={ getTotalPot() }
-            disabled={ true }
-            primaryText={
-              <span>TOTAL POT</span>
-            }
-            secondaryText={
-              <span styles={{ color: '#5F5F5F' }}>0.046153846153846164</span>
-            }
-          />
-
-          <ListItem
-            style={ styles.item }
-            leftIcon={ getTotalPerPerson() }
-            disabled={true}
-            primaryText={
-              <span>TOTAL PAYOUT PER PERSON </span>
-            }
-            secondaryText={
-              <span styles={{ color: '#5F5F5F'}}>ETH 0.0023</span>
-            }
-          />
-
-          <ListItem
-            style={ styles.item }
-            leftIcon={ getPersons() }
-            disabled={true}
-            primaryText={
-              <span>MAXIMUM AMOUNT OF REGISTRATIONs</span>
-            }
-            secondaryText={
-              <span styles={{ color: '#5F5F5F'}}>45</span>
-            }
-          />
-
-          <ListItem
-            style={ styles.item }
-            leftIcon={ getPersons() }
-            disabled={true}
-            primaryText={
-              <span>AMOUNT OF ATTENDEES</span>
-            }
-            secondaryText={
-              <span styles={{ color: '#5F5F5F'}}>36</span>
-            }
-          />
-
-          </List>
-
           <Table>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <TableHeader displaySelectAll={ false } adjustForCheckbox={ false } style={{ border: 'none' }}>
               <TableRow style={{ border: 'none' }}>
                 <TableHeaderColumn style={{ width: '60%'}} ></TableHeaderColumn>
                 <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>

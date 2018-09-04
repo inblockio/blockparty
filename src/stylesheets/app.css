@@ -24,10 +24,10 @@ body {
 
 .header {
 	height: 309px;
+	padding: 20px 30px;
 	background-size: cover;
 	background: url('../images/TopBanner.svg');
   display: flex;
-  align-items: stretch;
   flex-wrap: wrap;
 }
 
@@ -41,6 +41,61 @@ body {
 		order: 2;
 	}
 }
+
+.flex {
+	display: flex;
+}
+
+.align-center {
+	-ms-align-items: center;
+	align-items: center;
+}
+
+/* left */
+
+.ml-1 {
+	margin-left: 8px !important;
+}
+
+.ml-2 {
+	margin-left: 16px !important;
+}
+
+.ml-3 {
+	margin-left: 24px !important;
+}
+
+.ml-4 {
+	margin-left: 32px !important;
+}
+
+.ml-5 {
+	margin-left: 48px !important;
+}
+
+/* right */
+
+.mr-1 {
+	margin-right: 8px !important;
+}
+
+.mr-2 {
+	margin-right: 16px !important;
+}
+
+.mr-3 {
+	margin-right: 24px !important;
+}
+
+.mr-4 {
+	margin-right: 32px !important;
+}
+
+.mb-5 {
+	margin-right: 48px !important;
+}
+
+/* bottom */
 
 .mb-1 {
 	margin-bottom: 8px !important;
@@ -56,4 +111,8 @@ body {
 
 .mb-4 {
 	margin-bottom: 32px !important;
+}
+
+.mb-5 {
+	margin-bottom: 48px !important;
 }

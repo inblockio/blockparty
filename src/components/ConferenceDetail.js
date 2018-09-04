@@ -201,7 +201,7 @@ class ConferenceDetail extends React.Component {
             style={ styles.item }
             primaryText="TIME AND DATE"
             secondaryText={
-              <p styles={{ color: '#5F5F5F'}}> {this.getDateContent(this.state.date)}</p>
+              <p style={{ color: '#5F5F5F'}}> {this.getDateContent(this.state.date)}</p>
             }
           />
 
@@ -212,7 +212,7 @@ class ConferenceDetail extends React.Component {
             style={ styles.item }
             primaryText="DESCRIPTION"
             secondaryText={
-              <p styles={{ color: '#5F5F5F'}}>
+              <p style={{ color: '#5F5F5F'}}>
                 <span style={ styles.overflow }
                   dangerouslySetInnerHTML={ {__html:this.state.description_text} }
                 />
@@ -229,14 +229,14 @@ class ConferenceDetail extends React.Component {
             style={ styles.item }
             children={
               <span style={{ marginTop: '15px', order: '3' }}>
-                <a target='_blank' styles={{ color: '#5F5F5F'}} href={this.state.map_url}>
+                <a target='_blank' style={{ color: '#5F5F5F'}} href={this.state.map_url}>
                   <img src={require('../images/map.png')} style={{ objectFit: 'contain', display: 'block', maxHeight: '100px' }}/>
                 </a>
               </span>
             }
             primaryText="LOCATION"
             secondaryText={
-              <p styles={{ color: '#5F5F5F'}}>
+              <p style={{ color: '#5F5F5F'}}>
                 { this.state.location_text }
                 { this.state.location_sub_text }
               </p>

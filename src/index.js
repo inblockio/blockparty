@@ -18,7 +18,8 @@ import Instruction from './components/Instruction';
 import Participants from './components/Participants';
 import NetworkLabel from './components/NetworkLabel';
 import Data from './components/Data';
-
+import Header from './components/Header';
+import ParticipantsInfo from './components/ParticipantsInfo';
 
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -33,7 +34,7 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import FlatButton from 'material-ui/FlatButton';
 import $ from 'jquery';
 
-function setup(){
+function setup() {
   return new Promise(function(resolve,reject){
     let provider;
     let read_only = false;
@@ -245,6 +246,7 @@ window.onload = function() {
     })
 
     window.eventEmitter = eventEmitter;
+    
     function action(name, address, args) {
       var options = {from:address, gas:gas, gasPrice:window.gasPrice }
       eventEmitter.emit('notification', {status:'info', message:'Requested'});
@@ -267,7 +269,7 @@ window.onload = function() {
       });
     }
 
-    function watchEvent(){
+    function watchEvent() {
       var event = contract.allEvents({fromBlock: 0, toBlock: 'latest'}).watch(function(error, result){
         if (error) {
           console.log("Error: " + error);
@@ -277,7 +279,7 @@ window.onload = function() {
       });
     }
 
-    function getAccounts(){
+    function getAccounts() {
       if(read_only){
         eventEmitter.emit('accounts_received', []);
         eventEmitter.emit('instruction');
@@ -301,49 +303,29 @@ window.onload = function() {
 
     let networkLabel = <NetworkLabel eventEmitter={eventEmitter} read_only={read_only} />;
 
-    const styles = theme => ({
-      layout: {
-        width: 'auto',
-        marginLeft: theme.spacing.unit * 3,
-        marginRight: theme.spacing.unit * 3,
-      },
-    });
-
     const App = (props) => (
 
       <div>
         <MuiThemeProvider muiTheme={getMuiTheme()}>
           <div style={{overflow: 'hidden', maxWidth: '1440px', margin: 'auto'}}> {/*TO DO*/}
-            <header className="header align-center"> 
-              <AppBar
-                titleStyle={{textAlign:'center', fontSize:'xx-large', fontFamily:'Lobster'}}
-                title={
-                  <span style={{fontSize:'small', fontFamily:'sans-serif'}}>
-
-                  </span>
-                }
-                iconElementLeft={<Avatar src={require('./images/nightclub-white.png')} size={50} />}
-                iconElementRight={
-                  <span>
-                    {networkLabel}
-                    <FlatButton style={{color:'white'}} label="About" onClick={ () => {eventEmitter.emit('instruction')}} />
-                  </span>
-                }
-              />
-             <Typography variant="display2" style={{color: '#fff', maxWidth: '450px', marginLeft: '30px'}}>
-                RChain Cooperative
-                Developer Conference
-              </Typography>
-
-
-            </header>
-
+              <Header eventEmitter={ eventEmitter } />
               <Instruction eventEmitter={ eventEmitter } />
               <Notification eventEmitter={ eventEmitter } />
 
               <Divider />
               <Grid container spacing={ 16 } justify="space-between"  style={{padding: '0 20px'}}>
+
                 <Grid item xs="12" md="5" className="xs-order-2">
+                  <ParticipantsInfo
+                   eventEmitter={ eventEmitter }
+                    getDetail={ getDetail }
+                    getParticipants={ getParticipants }
+                    web3={ web3 }
+                    getAccounts={ getAccounts }
+                    action={ action }
+                    contract={ contract }
+                    contractAddress={ contractAddress }  />
+
                   <Participants
                     eventEmitter={ eventEmitter }
                     getDetail={ getDetail }
@@ -354,6 +336,7 @@ window.onload = function() {
                     contract={ contract }
                     contractAddress={ contractAddress }  />
                 </Grid>
+
                 <Grid item xs="12" md="5">
                   <ConferenceDetail
                     eventEmitter={ eventEmitter }
@@ -363,9 +346,16 @@ window.onload = function() {
                     contractAddress={ contractAddress }
                     />
                 </Grid>
+
               </Grid>
 
-              <FormInput read_only={ read_only } eventEmitter={ eventEmitter } getAccounts={ getAccounts } getDetail={ getDetail } action={ action } />
+              <FormInput
+                read_only={ read_only }
+                eventEmitter={ eventEmitter }
+                getAccounts={ getAccounts }
+                getDetail={ getDetail }
+                action={ action }
+              />
           </div>
         </MuiThemeProvider>
       </div>
