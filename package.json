@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/makoto/blockparty#readme",
   "dependencies": {
+    "@material-ui/core": "^3.0.1",
     "axios": "^0.17.1",
     "babel-core": "^6.8.0",
     "babel-loader": "^6.2.4",
@@ -41,6 +42,7 @@
     "etherscan-api": "^3.0.11",
     "event-emitter": "^0.3.4",
     "file-loader": "^0.8.5",
+    "google-maps-react": "^2.0.2",
     "jquery": "^3.3.1",
     "json-loader": "^0.5.4",
     "material-ui": "^0.15.2",
