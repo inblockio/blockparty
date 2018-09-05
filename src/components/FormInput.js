@@ -1,27 +1,85 @@
 import React from 'react';
+
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import Paper from 'material-ui/Paper';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import participantStatus from '../util/participantStatus';
 import cryptoBrowserify from 'crypto-browserify';
+import IconButton from 'material-ui/IconButton';
+import Avatar from 'material-ui/Avatar';
+import Checkbox from 'material-ui/Checkbox';
 
-const styles = {margin:12}
+import RegistrationForm from './RegistrationForm';
+
+const styles = {
+  nameField: {
+    marginBottom: '20px',
+  },
+
+  form: {
+    position: 'relative',
+    maxWidth: '400px',
+    display: 'inline-flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+
+  btn: {
+    height: '42px',
+    marginTop: '20px',
+    borderRadius: '7px',
+    lineHeight: '42px',
+  },
+
+  card: {
+    paddingTop: '40px',
+    boxShadow: 'none',
+  },
+
+  hint: {
+    marginTop: '5px',
+    marginBottom: '15px',
+    color: '#1FD91B',
+    fontSize: '12px'
+  },
+
+  checkbox: {
+    marginTop: '10px',
+    fontSize: '12px',
+    color: '#7D7D7D'
+  },
+
+  btnIcon: {
+    width: '27px',
+    height: '27px',
+    margin: '0 0 0 auto'
+  }
+}
+
 
 class FormInput extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       address:null,
       name:null,
       accounts:[],
       attendees:[],
       participants:[],
-      detail:{}
+      detail:{},
+      isRegisterInfo: false
     };
+
+    this.showRegisterInfo = this.showRegisterInfo.bind(this);
   }
+
+
 
   componentDidMount(){
     this.props.eventEmitter.on('accounts_received', accounts => {
@@ -152,6 +210,11 @@ class FormInput extends React.Component {
     });
   }
 
+  showRegisterInfo() {
+    console.log('hello')
+    this.setState({ isRegisterInfo: !this.state.isRegisterInfo })
+  }
+
   render() {
     let adminButtons, registerButton, attendButton, warningText;
 
@@ -206,8 +269,8 @@ class FormInput extends React.Component {
         }else{
           var action = 'register';
         }
-        registerButton = <RaisedButton secondary={this.showRegister()} disabled={!this.showRegister()}
-          label="RSVP" style={styles}
+        registerButton = <RaisedButton primary={ this.showRegister() } disabled={!this.showRegister()}
+          label="register and deposit" className="btn"
           onClick={this.handleAction.bind(this, action)}
         />
         warningText = <div style={{textAlign:'center', color:'red'}}>Please be aware that you <strong>cannot</strong> cancel once regiesterd. Please read FAQ section at ABOUT page on top right corner for more detail about this service.</div>
@@ -217,28 +280,46 @@ class FormInput extends React.Component {
     }
 
     var withdrawButton = <RaisedButton secondary={this.showWithdraw()} disabled={!this.showWithdraw()}
-      label="Withdraw" style={styles}
+      label="Withdraw" style={styles.btn}
       onClick={this.handleAction.bind(this, 'withdraw')}
     />
 
-    if (this.showRegister()) {
+    {/*if (this.showRegister()) {
       var nameField = <TextField
-        hintText="@twitter_handle (required)"
-        floatingLabelText="Twitter handle *"
-        floatingLabelFixed={true}
+        placeholder="@twitter_handle (required)"
+        floatingLabelFixed={false}
         value={this.state.name}
-        onChange={this.handleName.bind(this)}
-        style={{margin:'0 5px'}}
+        onChange={ this.handleName.bind(this) }
+        className="field field-name"
+        style={ styles.name }
       />
-    }
+    }*/}
+
+    var nameField = <TextField
+      placeholder="@twitter_handle (required)"
+      floatingLabelFixed={false}
+      value={this.state.name}
+      onChange={ this.handleName.bind(this) }
+      className="field field-name"
+      style={ styles.nameField }
+    />
+
+    var address = <TextField 
+            placeholder="@twitter_handle (required)"
+            value={ this.state.address }
+            floatingLabelFixed={false}
+            onChange={ this.handleSelect.bind(this) }
+            className="field field-address"
+            id="address"
+          />
 
     return (
-      <Paper zDepth={1}>
+      <Card style = { styles.card }>
         <form>
           {encryptionField}
-          {nameField}
-          <SelectField
-            value={this.state.address}
+
+          {/*<SelectField
+            value={ this.state.address }
             onChange={this.handleSelect.bind(this)}
             floatingLabelText="Account address"
             floatingLabelFixed={true}
@@ -249,14 +330,13 @@ class FormInput extends React.Component {
                 return (<MenuItem value={account} primaryText={account} />)
               })
             }
-          </SelectField>
-          {registerButton}
+          </SelectField>*/}
+     
           {withdrawButton}
           {attendButton}
           {adminButtons}
         </form>
-        {warningText}
-      </Paper>
+      </Card>
     );
   }
 }

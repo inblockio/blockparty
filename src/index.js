@@ -21,6 +21,7 @@ import NetworkLabel from './components/NetworkLabel';
 import Data from './components/Data';
 import Header from './components/Header';
 import ParticipantsInfo from './components/ParticipantsInfo';
+import RegistrationForm from './components/RegistrationForm';
 
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -326,18 +327,7 @@ window.onload = function() {
                     action={ action }
                     contract={ contract }
                     contractAddress={ contractAddress }  />
-
-                  <Participants
-                    eventEmitter={ eventEmitter }
-                    getDetail={ getDetail }
-                    getParticipants={ getParticipants }
-                    web3={ web3 }
-                    getAccounts={ getAccounts }
-                    action={ action }
-                    contract={ contract }
-                    contractAddress={ contractAddress }  />
-
-                    {/*<ParticipantsScroll getParticipants={ getParticipants } eventEmitter={ eventEmitter } />*/}
+                    <ParticipantsScroll getParticipants={ getParticipants } eventEmitter={ eventEmitter } />
                 </Grid>
 
                 <Grid item xs={ 12 } md={ 6 }>
@@ -351,14 +341,37 @@ window.onload = function() {
                 </Grid>
 
               </Grid>
-
-              <FormInput
-                read_only={ read_only }
-                eventEmitter={ eventEmitter }
-                getAccounts={ getAccounts }
-                getDetail={ getDetail }
-                action={ action }
-              />
+              <Grid container spacing={ 24 } justify="flex-start"  style={{padding: '0 20px'}}>
+                <Grid item xs={ 12 } md={ 6 } className="xs-order-2" style={{ textAlign: 'left' }}>
+                  <RegistrationForm 
+                    read_only={ read_only }
+                    eventEmitter={ eventEmitter }
+                    getAccounts={ getAccounts }
+                    getDetail={ getDetail }
+                    action={ action }
+                  />
+                  <FormInput
+                    read_only={ read_only }
+                    eventEmitter={ eventEmitter }
+                    getAccounts={ getAccounts }
+                    getDetail={ getDetail }
+                    action={ action }
+                  />
+                 </Grid>
+              </Grid>
+              <Grid container spacing={ 24 } justify="flex-start"  style={{padding: '0 20px'}}>
+                <Grid item xs={ 12 } md={ 6 } className="xs-order-2" style={{ textAlign: 'center' }}>
+                  <Participants
+                    eventEmitter={ eventEmitter }
+                    getDetail={ getDetail }
+                    getParticipants={ getParticipants }
+                    web3={ web3 }
+                    getAccounts={ getAccounts }
+                    action={ action }
+                    contract={ contract }
+                    contractAddress={ contractAddress }  />
+                </Grid>
+              </Grid>
           </div>
         </MuiThemeProvider>
       </div>

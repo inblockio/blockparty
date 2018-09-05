@@ -17,9 +17,9 @@ import $ from 'jquery';
 
 const getTwitterIcon = (name) =>(
   <Avatar
-    style={{verticalAlign:'middle'}}
+    style={{ verticalAlign:'middle' }}
     src={`https://avatars.io/twitter/${name}`}
-    size={26}
+    size={ 26 }
   />
 )
 
@@ -154,7 +154,7 @@ class Participants extends React.Component {
 
   yesNo(participant) {
     if(participant.attended) {
-      return ( <Avatar src={require('../images/сheck.svg')} size={ 26 } backgroundColor="white" /> );
+      return ( <Avatar src={ require('../images/сheck.svg') } size={ 26 } backgroundColor="transparent" /> );
     }else{
       if(this.isAdmin() && !this.state.detail.ended){
         return (
@@ -163,7 +163,7 @@ class Participants extends React.Component {
           />
         )
       }else{
-        return ( <Avatar src={require('../images/cross.svg')} size={ 26 } backgroundColor="white" /> );
+        return ( <Avatar src={ require('../images/cross.svg') } size={ 26 } backgroundColor="transparent" /> );
       }
     }
   }
