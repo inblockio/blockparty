@@ -75,6 +75,18 @@ const styles = {
     lineHeight: '42px'
   },
 
+  withdrawButton: {
+    height: '42px',
+    width: '165px',
+    marginBottom: '15px',
+    padding: '0 10px',
+    color: '#fff',
+    borderRadius: '7px',
+    backgroundColor: '#32A1E4',
+    textTransform: 'uppercase',
+    lineHeight: '42px'
+  },
+
   canselEvent: {
     backgroundColor:'transparent',
     height: '42px',
@@ -102,6 +114,14 @@ const styles = {
     marginBottom: '25px',
     color: '#1FD91B',
     fontSize: '12px'
+  },
+
+  hintBold: {
+    marginTop: '10px',
+    marginBottom: '25px',
+    color: '#1FD91B',
+    fontSize: '12px',
+    fontWeight: 'bold'
   },
 
   showAll: {
@@ -484,20 +504,27 @@ class Participants extends React.Component {
       disabled={ !this.showCancel() }
       children={ <span>Show All</span> }
       style={ styles.showAll }
-      onClick={this.handleAction.bind(this, 'cancel')}
+      onClick={ this.handleAction.bind(this, 'cancel') }
+    />
+
+    let withdrawButton = <FlatButton
+      secondary={ this.showWithdraw() }
+      disabled={ !this.showWithdraw() }
+      children={ <span>Withdraw</span> }
+      style={ styles.withdrawButton }
+      onClick={ this.handleAction.bind(this, 'withdraw') }
     />
 
 
-    adminButtons = <div>
+    let clearButton =
       <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
         label="Clear" style={styles}
         onClick={this.handleAction.bind(this, 'clear')}
       />
-    </div>
 
     return (
       <Card style={ styles.card } >
-          <Typography variant="title">Admin</Typography>
+          <Typography variant="title" style={{ fontWeight: '400' }}>Admin</Typography>
           <div style={ styles.hint }>Metamask account recognised as admin</div>
           <div style={{ marginBottom: '10px', textAlign: 'left' }}>{ this.state.participants.length } Registrations</div>
           {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
@@ -518,6 +545,14 @@ class Participants extends React.Component {
           { showAll }
           <div>{ payoutBtn }</div>
           <div>{ canselEvent }</div>
+          { this.showWithdraw() ?
+          <div style={{ marginTop: '20px' }}>
+            <Typography variant="title" style={{ fontWeight: '400' }}>Payout</Typography>
+            <span style={ styles.hint }>Metamask account connected with address:</span>
+            <div>0xc316319950bf01e18748ed807c05cbe64d48da6b</div>
+            <div style={ styles.hintBold }>You are entitled to withdraw ETH 0.0023</div>
+            { withdrawButton }
+          </div> : null }
       </Card>
     );
   }
