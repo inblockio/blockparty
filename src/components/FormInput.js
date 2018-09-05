@@ -225,7 +225,7 @@ class FormInput extends React.Component {
       />
     }
 
-    if(this.isOwner()){
+    {/*if(this.isOwner()){
       adminButtons = <div>
         <RaisedButton secondary={true}
           label="Grant admin" style={styles}
@@ -245,7 +245,27 @@ class FormInput extends React.Component {
           onClick={this.handleAction.bind(this, 'clear')}
         />
       </div>
-    }
+    }*/}
+
+    adminButtons = <div>
+        <RaisedButton secondary={true}
+          label="Grant admin" style={styles}
+          onClick={this.handleAction.bind(this, 'grant')}
+        />
+
+        <RaisedButton secondary={this.showPayback()} disabled={!this.showPayback()}
+          label="Payback" style={styles}
+          onClick={this.handleAction.bind(this, 'payback')}
+        />
+        <RaisedButton secondary={this.showCancel()} disabled={!this.showCancel()}
+          label="Cancel" style={styles}
+          onClick={this.handleAction.bind(this, 'cancel')}
+        />
+        <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
+          label="Clear" style={styles}
+          onClick={this.handleAction.bind(this, 'clear')}
+        />
+      </div>
 
     var availableSpots = this.state.detail.limitOfParticipants - this.state.detail.registered;
     if(this.props.read_only){
@@ -316,7 +336,7 @@ class FormInput extends React.Component {
     return (
       <Card style = { styles.card }>
         <form>
-          {encryptionField}
+          { encryptionField }
 
           {/*<SelectField
             value={ this.state.address }

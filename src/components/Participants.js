@@ -7,10 +7,15 @@ import FlatButton from 'material-ui/FlatButton';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
 import Avatar from 'material-ui/Avatar';
 import Checkbox from 'material-ui/Checkbox';
+import RaisedButton from 'material-ui/RaisedButton';
+import Typography from '@material-ui/core/Typography';
+import IconButton from 'material-ui/IconButton';
 
 import participantStatus from '../util/participantStatus';
 import NameSearch from './NameSearch';
 import QRCode from './QRCode';
+
+
 
 import math from 'mathjs';
 import $ from 'jquery';
@@ -44,9 +49,35 @@ const styles = {
     lineHeight: '24px'
   },
 
+  btnIcon: {
+    margin: '0 0 0 auto'
+  },
+
+  btnAdmin: {
+    height: '23px',
+    borderRadius: '7px',
+    color: '#fff',
+    textTransform: 'uppercase',
+    fontSize: '11px',
+    backgroundColor: '#D0D0D0',
+    lineHeight: '20px'
+  },
+
   name: {
+    flex: '100 1 100%',
     color: '#1D9C1B',
     fontSize: '18px',
+  },
+
+  row: {
+    marginBottom: '15px'
+  },
+
+  hint: {
+    marginTop: '10px',
+    marginBottom: '25px',
+    color: '#1FD91B',
+    fontSize: '12px'
   },
 };
 
@@ -68,8 +99,6 @@ class Participants extends React.Component {
 
      this.showDetails = this.showDetails.bind(this);
   }
-
-
 
   componentDidMount() {
     // Initialize
@@ -163,7 +192,7 @@ class Participants extends React.Component {
           />
         )
       }else{
-        return ( <Avatar src={ require('../images/cross.svg') } size={ 26 } backgroundColor="transparent" /> );
+        return ( <Avatar src={ require('../images/cross.svg') } size={ 20 } backgroundColor="transparent" /> );
       }
     }
   }
@@ -225,6 +254,8 @@ class Participants extends React.Component {
 
       return this.state.participants.map( (participant, id) => {
 
+        console.log('this.state.participants ', this.state.participants )
+
         if(state.keyword && state.keyword.length >=3){
           let keyword = state.keyword.toLowerCase();
           participant.matched = !!(participant.name.match(keyword)) || !!(participant.address.match(keyword))
@@ -255,7 +286,7 @@ class Participants extends React.Component {
           border: 'none'
         };
 
-        if (!participant.matched){
+        if (!participant.matched) {
           rowStyle.display ='none';
         }
 
@@ -263,25 +294,38 @@ class Participants extends React.Component {
           <TableRow  style={ rowStyle } key={ participant.id }>
             { this.state.isDetails ?
               <div className="participant_info">
-                <h2>
+                <h4 className="flex align-center">
                   <span style={ styles.name } className={ participant.role ? 'active' : '' }>
                     { participant.name }
                   </span>
-                </h2>
-                <div style={ styles.row } className="flex align-center">
-                  <span>Attended:</span>
+
+                  <IconButton onClick={ this.showRegisterInfo } size = { 15 } style={ styles.btnIcon } onClick={ () => this.showDetails() }>
+                    <Avatar
+                      src={require("../images/close.svg")}
+                      className="icon"
+                      size = { 26 }
+                      styles={{ background: 'transparent' }}
+                    />
+                  </IconButton>
+                </h4>
+                <div style={ styles.row } className="flex align-center justify-between">
+                  <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Attended:</span>
                   <span>{ this.yesNo(participant) }</span>
                 </div>
-                <div style={ styles.row } className="flex align-center">
-                  <span>Payout Status: :</span>
+                <div style={ styles.row } className="flex align-center justify-between">
+                  <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Payout Status: </span>
                   <span>{ this.displayBalance(participant) }</span>
+                </div>
+                <div style={ styles.row } className="flex align-center justify-between">
+                  <span  style={{ fontSize: '12px', fontWeight: 'bold' }}>Account</span>
+                  <span style={{ color: '#32A1E4' }}>{ participant.address }</span>
                 </div>
               </div> : ''
             }
-            <TableRowColumn style={{ width: '60%', paddingLeft: '0px'}} >
+            <TableRowColumn style={{ width: '60%', paddingLeft: '15px'}} >
               {/* { getTwitterIcon(participant.name) } */}
               <Avatar
-                  style={{verticalAlign:'middle'}}
+                  style={{ verticalAlign:'middle' }}
                   src={`https://avatars.io/twitter/${name}`}
                   onError={() => this.addDefaultSrc()}
                   size={26}
@@ -320,21 +364,110 @@ class Participants extends React.Component {
   ev.target.src = 'some default image url'
 }
 
+  handleAction(actionName) {
+    var args = [];
+    switch (actionName) {
+      case 'grant':
+        args.push(this.state.attendees);
+        break;
+      case 'attend':
+        args.push(this.state.attendees);
+        break;
+      case 'register':
+        args.push(this.state.name);
+        break;
+      case 'registerWithEncryption':
+        args.push(this.state.name);
+        let encryptedData = cryptoBrowserify.publicEncrypt(this.state.detail.encryption, new Buffer(this.state.full_name, 'utf-8'));
+        args.push(encryptedData.toString('hex'));
+        break;
+    }
+
+    if(actionName == 'register' || actionName == 'registerWithEncryption') {
+      let obj = {
+        action:'register',
+        user:this.state.address,
+        contract:this.state.detail.contractAddress,
+        agent: navigator.userAgent,
+        provider:web3.currentProvider.constructor.name,
+        hostname: window.location.hostname,
+        created_at: new Date()
+      }
+
+      this.props.eventEmitter.emit('logger', obj);
+    }
+
+    this.props.action(actionName, this.state.address.trim(), args)
+    this.setState({
+      name: null,
+      attendees:[]
+    });
+    this.props.eventEmitter.emit('attendees', []);
+  }
+
+  showWithdraw() {
+    return this.state.detail.canWithdraw && (this.participantStatus() == 'Won' || this.participantStatus() == 'Cancelled');
+  }
+
+  showPayback() {
+    return this.state.detail.canPayback
+  }
+
+  showCancel() {
+    return this.state.detail.canCancel
+  }
+
+  showClear() {
+    return this.state.detail.ended
+  }
+
   render() {
+    let adminButtons;
+
+    let makeAdmin =  <FlatButton
+        secondary={ true }
+        style={ styles.btnAdmin }
+        onClick={ this.handleAction.bind(this, 'grant') }
+        children={ <span>Make admin</span> }
+      />
+
+    adminButtons = <div>
+      <RaisedButton secondary={true}
+        label="Grant admin" style={styles}
+        onClick={ this.handleAction.bind(this, 'grant') }
+      />
+
+      <RaisedButton secondary={this.showPayback()} disabled={!this.showPayback()}
+        label="Payback" style={styles}
+        onClick={this.handleAction.bind(this, 'payback')}
+      />
+      <RaisedButton secondary={this.showCancel()} disabled={!this.showCancel()}
+        label="Cancel" style={styles}
+        onClick={this.handleAction.bind(this, 'cancel')}
+      />
+      <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
+        label="Clear" style={styles}
+        onClick={this.handleAction.bind(this, 'clear')}
+      />
+    </div>
+
     return (
-      <Card style={ styles.card }>
+      <Card style={ styles.card } >
+          <Typography variant="title">Admin</Typography>
+          <div style={ styles.hint }>Metamask account recognised as admin</div>
+          <div style={{ marginBottom: '10px', textAlign: 'left' }}>{ this.state.participants.length } Registrations</div>
           {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
           <QRCode  eventEmitter={this.props.eventEmitter} />*/}
           <Table>
-            <TableHeader displaySelectAll={ false } adjustForCheckbox={ false } style={{ border: 'none' }}>
+            <TableHeader displaySelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
               <TableRow style={{ border: 'none' }}>
-                <TableHeaderColumn style={{ width: '60%'}} ></TableHeaderColumn>
+                <TableHeaderColumn style={{ width: '60%'}} >{ makeAdmin }</TableHeaderColumn>
                 <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
                 <TableHeaderColumn style={{ width: '20%', textAlign: 'right'}} ></TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody displayRowCheckbox={false}>
-              {this.displayParticipants()}
+            <TableBody displayRowCheckbox={ true }>
+              { this.displayParticipants() }
             </TableBody>
           </Table>
           <p style={{color:'grey', fontSize:'small', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
