@@ -14,38 +14,6 @@ import QRCode from './QRCode';
 import math from 'mathjs';
 import $ from 'jquery';
 
-const getDepositIcon = ( name ) => (
-  <Avatar
-    style = {{ verticalAlign:'middle', backgroundColor: 'transparent' }}
-    src = { require("../images/deposit.svg") }
-    size = { 26 }
-  />
-)
-
-const getTotalPot = ( name ) => (
-  <Avatar
-    style = {{ verticalAlign:'middle', backgroundColor: 'transparent' }}
-    src = { require("../images/total_pot.svg") }
-    size = { 26 }
-  />
-)
-
-const getTotalPerPerson = ( name ) => (
-  <Avatar
-    style = {{ verticalAlign:'middle', backgroundColor: 'transparent' }}
-    src = { require("../images/total_per_person.svg") }
-    size = { 26 }
-  />
-)
-
-const getPersons = ( name ) => (
-  <Avatar
-    style = {{ verticalAlign:'middle', backgroundColor: 'transparent' }}
-    src = { require("../images/persons.svg") }
-    size = { 26 }
-  />
-)
-
 
 const styles = {
 
@@ -58,8 +26,49 @@ const styles = {
   card: {
     paddingTop: '40px',
     boxShadow: 'none',
-  }
+  },
+
+  icon: {
+    top: '12px',
+    margin: '0',
+    width: '29px',
+    height: '29px',
+    verticalAlign:'middle',
+    backgroundColor: 'transparent'
+  },
 };
+
+const getDepositIcon = ( name ) => (
+  <Avatar
+    style = { styles.icon }
+    src = { require("../images/deposit.svg") }
+    size = { 26 }
+  />
+)
+
+const getTotalPot = ( name ) => (
+  <Avatar
+    style = { styles.icon }
+    src = { require("../images/total_pot.svg") }
+    size = { 26 }
+  />
+)
+
+const getTotalPerPerson = ( name ) => (
+  <Avatar
+    style = { styles.icon }
+    src = { require("../images/total_per_person.svg") }
+    size = { 26 }
+  />
+)
+
+const getPersons = ( name ) => (
+  <Avatar
+    style = { styles.icon }
+    src = { require("../images/persons.svg") }
+    size = { 26 }
+  />
+)
 
 class ParticipantsInfo extends React.Component {
 
@@ -198,10 +207,6 @@ class ParticipantsInfo extends React.Component {
           />
 
           </List>
-          <p
-            style = {{ color:'grey', fontSize:'small' }}>
-            Note: admins are marked as *
-          </p>
       </Card>
     );
   }

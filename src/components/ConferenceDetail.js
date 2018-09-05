@@ -16,22 +16,6 @@ import Avatar from 'material-ui/Avatar';
 import math from 'mathjs';
 import $ from 'jquery';
 
-const getEtherIcon = () =>(
-  <Avatar src={require('../images/ethereum.ico')} size={ 26 } backgroundColor="white" />
-)
-
-const getCalendarIcon = (name) =>(
-  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/calendar.svg")} size={26} />
-)
-
-const getDescriptionIcon = (name) =>(
-  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/description.svg")} size={26} />
-)
-
-const getLocationIcon = (name) =>(
-  <Avatar style={{verticalAlign:'middle', backgroundColor: 'transparent'}} src={require("../images/location.svg")} size={26} />
-)
-
 
 const styles = {
   paperLeft:{
@@ -45,6 +29,15 @@ const styles = {
     color: '#5F5F5F',
     merginHight:1,
 
+  },
+
+  icon: {
+    top: '12px',
+    margin: '0',
+    width: '29px',
+    height: '29px',
+    verticalAlign:'middle',
+    backgroundColor: 'transparent'
   },
 
   item: {
@@ -68,6 +61,27 @@ const styles = {
     whiteSpace: 'normal'
   }
 };
+
+const getEtherIcon = () => (
+  <Avatar
+    src={ require('../images/ethereum.ico') }
+    backgroundColor= "white"
+    style = { styles.icon }
+  />
+)
+
+const getCalendarIcon = (name) =>(
+  <Avatar src={require("../images/calendar.svg")} style = { styles.icon } />
+)
+
+const getDescriptionIcon = (name) =>(
+  <Avatar src={require("../images/description.svg")} style = { styles.icon } />
+)
+
+const getLocationIcon = (name) =>(
+  <Avatar src={require("../images/location.svg")} style = { styles.icon } />
+)
+
 
 class ConferenceDetail extends React.Component {
   constructor(props) {

@@ -16,9 +16,12 @@ import math from 'mathjs';
 import $ from 'jquery';
 
 const getTwitterIcon = (name) =>(
-  <Avatar style={{verticalAlign:'middle'}} src={`https://avatars.io/twitter/${name}`} size={26} />
+  <Avatar
+    style={{verticalAlign:'middle'}}
+    src={`https://avatars.io/twitter/${name}`}
+    size={26}
+  />
 )
-
 
 const styles = {
   card: {
@@ -39,7 +42,12 @@ const styles = {
     minWidth: '40px',
     height: '24px',
     lineHeight: '24px'
-  }
+  },
+
+  name: {
+    color: '#1D9C1B',
+    fontSize: '18px',
+  },
 };
 
 class Participants extends React.Component {
@@ -57,7 +65,11 @@ class Participants extends React.Component {
       etherscan_url:null,
       isDetails: false
     };
+
+     this.showDetails = this.showDetails.bind(this);
   }
+
+
 
   componentDidMount() {
     // Initialize
@@ -211,28 +223,34 @@ class Participants extends React.Component {
     if(this.state.participants.length > 0) {
       var state = this.state;
 
-      return this.state.participants.map((participant) => {
+      return this.state.participants.map( (participant, id) => {
+
         if(state.keyword && state.keyword.length >=3){
           let keyword = state.keyword.toLowerCase();
           participant.matched = !!(participant.name.match(keyword)) || !!(participant.address.match(keyword))
-        }else{
+
+        } else {
           participant.matched = true
         }
+
         let isAdmin = state.detail.admins.filter((admin)=>{ return admin == participant.address }).length > 0;
-        if ( isAdmin || state.detail.owner == participant.address ){
-          participant.role = '*';
+
+        if ( isAdmin || state.detail.owner == participant.address ) {
+          participant.role = true;
         }
 
         var participantAddress;
+
         if (this.state.etherscan_url) {
           participantAddress = (
             (<a target='_blank' href={ `${this.state.etherscan_url}/address/${participant.address}` }>{participant.address.slice(0,5)}...</a>)
           )
-        }else{
+        } else {
           participantAddress = (
             `${participant.address.slice(0,5)}...`
           )
         }
+
         let rowStyle = {
           border: 'none'
         };
@@ -240,49 +258,86 @@ class Participants extends React.Component {
         if (!participant.matched){
           rowStyle.display ='none';
         }
+
         return (
-          <TableRow  style={rowStyle} >
-            <TableRowColumn style={{ width: '60%'}}>
-              {getTwitterIcon(participant.name)}
-              <span style={{paddingLeft:'1em'}}>
-                <a target='_blank' href={ `https://twitter.com/${participant.name}` }>{participant.role} {participant.name}</a>
+          <TableRow  style={ rowStyle } key={ participant.id }>
+            { this.state.isDetails ?
+              <div className="participant_info">
+                <h2>
+                  <span style={ styles.name } className={ participant.role ? 'active' : '' }>
+                    { participant.name }
+                  </span>
+                </h2>
+                <div style={ styles.row } className="flex align-center">
+                  <span>Attended:</span>
+                  <span>{ this.yesNo(participant) }</span>
+                </div>
+                <div style={ styles.row } className="flex align-center">
+                  <span>Payout Status: :</span>
+                  <span>{ this.displayBalance(participant) }</span>
+                </div>
+              </div> : ''
+            }
+            <TableRowColumn style={{ width: '60%', paddingLeft: '0px'}} >
+              {/* { getTwitterIcon(participant.name) } */}
+              <Avatar
+                  style={{verticalAlign:'middle'}}
+                  src={`https://avatars.io/twitter/${name}`}
+                  onError={() => this.addDefaultSrc()}
+                  size={26}
+                />
+              <span>
+                <a 
+                  target='_blank'
+                  href={ `https://twitter.com/${participant.name}` }
+                  className={ participant.role ? 'user user--active' : 'user' }
+                >{ participant.name }</a>
               </span>
-                ({participantAddress})
+                {/*({participantAddress})*/}
               </TableRowColumn>
             <TableRowColumn style={{ width: '20%'}} >{this.yesNo(participant)}</TableRowColumn>
-            <TableRowColumn style={{ width: '20%'}} >
+            <TableRowColumn style={{ width: '20%', textAlign: 'right'}} >
               {/*<span>
                 { this.displayBalance(participant) }
               </span> It's important part*/}
-              <FlatButton secondary={true} onClick={ this.showDetails } style={ styles.btn } children={ <span>details</span> }/>
+              <FlatButton secondary={true} onClick={ () => this.showDetails() } style={ styles.btn } children={ <span>details</span> }/>
             </TableRowColumn>
           </TableRow>
         )
       })
     }else{
-      return(<TableRowColumn style={{textAlign:'center'}} width={100} >No one has registered yet. Be the first to register by typing your twitter handle and press 'Register'</TableRowColumn>)
+      return(<TableRowColumn style={{textAlign:'center'}} width={ 100 } >No one has registered yet. Be the first to register by typing your twitter handle and press 'Register'</TableRowColumn>)
     }
   }
+
+  showDetails() {
+    console.log('Click happened');
+    this.setState({ isDetails: !this.state.isDetails });
+    console.log(this.state.isDetails)
+  }
+
+  addDefaultSrc(ev) {
+  ev.target.src = 'some default image url'
+}
 
   render() {
     return (
       <Card style={ styles.card }>
           {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
           <QRCode  eventEmitter={this.props.eventEmitter} />*/}
-
           <Table>
             <TableHeader displaySelectAll={ false } adjustForCheckbox={ false } style={{ border: 'none' }}>
               <TableRow style={{ border: 'none' }}>
                 <TableHeaderColumn style={{ width: '60%'}} ></TableHeaderColumn>
                 <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
+                <TableHeaderColumn style={{ width: '20%', textAlign: 'right'}} ></TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
               {this.displayParticipants()}
             </TableBody>
           </Table>
-          <p style={{color:'grey', fontSize:'small'}}>Note: admins are marked as *</p>
+          <p style={{color:'grey', fontSize:'small', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
       </Card>
     );
   }

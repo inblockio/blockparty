@@ -16,6 +16,7 @@ import FormInput from './components/FormInput';
 import Notification from './components/Notification';
 import Instruction from './components/Instruction';
 import Participants from './components/Participants';
+import ParticipantsScroll from './components/ParticipantsScroll';
 import NetworkLabel from './components/NetworkLabel';
 import Data from './components/Data';
 import Header from './components/Header';
@@ -246,7 +247,7 @@ window.onload = function() {
     })
 
     window.eventEmitter = eventEmitter;
-    
+
     function action(name, address, args) {
       var options = {from:address, gas:gas, gasPrice:window.gasPrice }
       eventEmitter.emit('notification', {status:'info', message:'Requested'});
@@ -313,9 +314,9 @@ window.onload = function() {
               <Notification eventEmitter={ eventEmitter } />
 
               <Divider />
-              <Grid container spacing={ 16 } justify="space-between"  style={{padding: '0 20px'}}>
+              <Grid container spacing={ 24 } justify="space-between"  style={{padding: '0 20px'}}>
 
-                <Grid item xs="12" md="5" className="xs-order-2">
+                <Grid item xs={ 12 } md={ 6 } className="xs-order-2">
                   <ParticipantsInfo
                    eventEmitter={ eventEmitter }
                     getDetail={ getDetail }
@@ -335,9 +336,11 @@ window.onload = function() {
                     action={ action }
                     contract={ contract }
                     contractAddress={ contractAddress }  />
+
+                    {/*<ParticipantsScroll getParticipants={ getParticipants } eventEmitter={ eventEmitter } />*/}
                 </Grid>
 
-                <Grid item xs="12" md="5">
+                <Grid item xs={ 12 } md={ 6 }>
                   <ConferenceDetail
                     eventEmitter={ eventEmitter }
                     getDetail={ getDetail }
