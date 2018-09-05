@@ -63,6 +63,30 @@ const styles = {
     lineHeight: '20px'
   },
 
+  payoutBtn: {
+    height: '42px',
+    width: '165px',
+    marginBottom: '15px',
+    padding: '0 10px',
+    color: '#fff',
+    borderRadius: '7px',
+    backgroundColor: '#32A1E4',
+    textTransform: 'uppercase',
+    lineHeight: '42px'
+  },
+
+  canselEvent: {
+    backgroundColor:'transparent',
+    height: '42px',
+    width: '165px',
+    borderRadius: '7px',
+    padding: '0 10px',
+    color: '#FF3A3A',
+    border: '1px solid #FF3A3A',
+    textTransform: 'uppercase',
+    lineHeight: '42px'
+  },
+
   name: {
     flex: '100 1 100%',
     color: '#1D9C1B',
@@ -79,6 +103,14 @@ const styles = {
     color: '#1FD91B',
     fontSize: '12px'
   },
+
+  showAll: {
+    fontSize: '12px',
+    marginBottom: '25px',
+    padding: '0',
+    border: 'none',
+    color: '#55ACEE'
+  }
 };
 
 class Participants extends React.Component {
@@ -322,7 +354,7 @@ class Participants extends React.Component {
                 </div>
               </div> : ''
             }
-            <TableRowColumn style={{ width: '60%', paddingLeft: '15px'}} >
+            <TableRowColumn style={{ width: '58%', paddingLeft: '15px'}} >
               {/* { getTwitterIcon(participant.name) } */}
               <Avatar
                   style={{ verticalAlign:'middle' }}
@@ -340,7 +372,7 @@ class Participants extends React.Component {
                 {/*({participantAddress})*/}
               </TableRowColumn>
             <TableRowColumn style={{ width: '20%'}} >{this.yesNo(participant)}</TableRowColumn>
-            <TableRowColumn style={{ width: '20%', textAlign: 'right'}} >
+            <TableRowColumn style={{ width: '22%', textAlign: 'right', minWidth: '80px'}} >
               {/*<span>
                 { this.displayBalance(participant) }
               </span> It's important part*/}
@@ -350,7 +382,7 @@ class Participants extends React.Component {
         )
       })
     }else{
-      return(<TableRowColumn style={{textAlign:'center'}} width={ 100 } >No one has registered yet. Be the first to register by typing your twitter handle and press 'Register'</TableRowColumn>)
+      return(<TableRowColumn style={{ textAlign:'center' }} width={ 100 } >No one has registered yet. Be the first to register by typing your twitter handle and press 'Register'</TableRowColumn>)
     }
   }
 
@@ -425,26 +457,38 @@ class Participants extends React.Component {
     let adminButtons;
 
     let makeAdmin =  <FlatButton
-        secondary={ true }
-        style={ styles.btnAdmin }
-        onClick={ this.handleAction.bind(this, 'grant') }
-        children={ <span>Make admin</span> }
-      />
+      secondary={ true }
+      style={ styles.btnAdmin }
+      onClick={ this.handleAction.bind(this, 'grant') }
+      children={ <span>Make admin</span> }
+    />
+
+    let payoutBtn =  <FlatButton
+      secondary={ this.showPayback()} 
+      disabled={!this.showPayback()}
+      children={ <span>Open Payouts</span> }
+      style={ styles.payoutBtn }
+      onClick={ this.handleAction.bind(this, 'payback') }
+    />
+
+    let canselEvent = <FlatButton
+      secondary={this.showCancel()}
+      disabled={!this.showCancel()}
+      children={ <span> Cancel event </span> }
+      style={ styles.canselEvent }
+      onClick={this.handleAction.bind(this, 'cancel')}
+    />
+
+    let showAll = <FlatButton
+      secondary={ this.showCancel() }
+      disabled={ !this.showCancel() }
+      children={ <span>Show All</span> }
+      style={ styles.showAll }
+      onClick={this.handleAction.bind(this, 'cancel')}
+    />
+
 
     adminButtons = <div>
-      <RaisedButton secondary={true}
-        label="Grant admin" style={styles}
-        onClick={ this.handleAction.bind(this, 'grant') }
-      />
-
-      <RaisedButton secondary={this.showPayback()} disabled={!this.showPayback()}
-        label="Payback" style={styles}
-        onClick={this.handleAction.bind(this, 'payback')}
-      />
-      <RaisedButton secondary={this.showCancel()} disabled={!this.showCancel()}
-        label="Cancel" style={styles}
-        onClick={this.handleAction.bind(this, 'cancel')}
-      />
       <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
         label="Clear" style={styles}
         onClick={this.handleAction.bind(this, 'clear')}
@@ -461,16 +505,19 @@ class Participants extends React.Component {
           <Table>
             <TableHeader displaySelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
               <TableRow style={{ border: 'none' }}>
-                <TableHeaderColumn style={{ width: '60%'}} >{ makeAdmin }</TableHeaderColumn>
+                <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin }</TableHeaderColumn>
                 <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '20%', textAlign: 'right'}} ></TableHeaderColumn>
+                <TableHeaderColumn style={{ width: '22%', textAlign: 'right'}} ></TableHeaderColumn>
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={ true }>
               { this.displayParticipants() }
             </TableBody>
           </Table>
-          <p style={{color:'grey', fontSize:'small', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
+          <p style={{color:'grey', fontSize:'12px', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
+          { showAll }
+          <div>{ payoutBtn }</div>
+          <div>{ canselEvent }</div>
       </Card>
     );
   }

@@ -14,8 +14,6 @@ import IconButton from 'material-ui/IconButton';
 import Avatar from 'material-ui/Avatar';
 import Checkbox from 'material-ui/Checkbox';
 
-import RegistrationForm from './RegistrationForm';
-
 const styles = {
   nameField: {
     marginBottom: '20px',
@@ -24,9 +22,11 @@ const styles = {
   form: {
     position: 'relative',
     maxWidth: '400px',
-    display: 'inline-flex',
+    display: 'block',
+    textAlign: 'center',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    margin: '0 auto'
   },
 
   btn: {
@@ -42,6 +42,7 @@ const styles = {
   },
 
   hint: {
+    display: 'block',
     marginTop: '5px',
     marginBottom: '15px',
     color: '#1FD91B',
@@ -62,7 +63,8 @@ const styles = {
 }
 
 
-class FormInput extends React.Component {
+class RegistrationForm extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -79,9 +81,7 @@ class FormInput extends React.Component {
     this.showRegisterInfo = this.showRegisterInfo.bind(this);
   }
 
-
-
-  componentDidMount(){
+  componentDidMount() {
     this.props.eventEmitter.on('accounts_received', accounts => {
       this.setState({
         address:accounts[0],
@@ -182,21 +182,6 @@ class FormInput extends React.Component {
     return this.state.detail.canAttend
   }
 
-  showWithdraw(){
-    return this.state.detail.canWithdraw && (this.participantStatus() == 'Won' || this.participantStatus() == 'Cancelled');
-  }
-
-  showPayback(){
-    return this.state.detail.canPayback
-  }
-
-  showCancel(){
-    return this.state.detail.canCancel
-  }
-
-  showClear(){
-    return this.state.detail.ended
-  }
 
   handleName(e) {
     this.setState({
@@ -211,69 +196,19 @@ class FormInput extends React.Component {
   }
 
   showRegisterInfo() {
-    console.log('hello')
     this.setState({ isRegisterInfo: !this.state.isRegisterInfo })
   }
 
   render() {
-    let adminButtons, registerButton, attendButton, warningText;
-
-    if(this.isAdmin()){
-      attendButton = <RaisedButton secondary={this.showAttend()} disabled={!this.showAttend()}
-        label="Batch Attend" style={styles}
-        onClick={this.handleAction.bind(this, 'attend')}
-      />
-    }
-
-    {/*if(this.isOwner()){
-      adminButtons = <div>
-        <RaisedButton secondary={true}
-          label="Grant admin" style={styles}
-          onClick={this.handleAction.bind(this, 'grant')}
-        />
-
-        <RaisedButton secondary={this.showPayback()} disabled={!this.showPayback()}
-          label="Payback" style={styles}
-          onClick={this.handleAction.bind(this, 'payback')}
-        />
-        <RaisedButton secondary={this.showCancel()} disabled={!this.showCancel()}
-          label="Cancel" style={styles}
-          onClick={this.handleAction.bind(this, 'cancel')}
-        />
-        <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
-          label="Clear" style={styles}
-          onClick={this.handleAction.bind(this, 'clear')}
-        />
-      </div>
-    }
-
-    adminButtons = <div>
-        <RaisedButton secondary={true}
-          label="Grant admin" style={styles}
-          onClick={this.handleAction.bind(this, 'grant')}
-        />
-
-        <RaisedButton secondary={this.showPayback()} disabled={!this.showPayback()}
-          label="Payback" style={styles}
-          onClick={this.handleAction.bind(this, 'payback')}
-        />
-        <RaisedButton secondary={this.showCancel()} disabled={!this.showCancel()}
-          label="Cancel" style={styles}
-          onClick={this.handleAction.bind(this, 'cancel')}
-        />
-        <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
-          label="Clear" style={styles}
-          onClick={this.handleAction.bind(this, 'clear')}
-        />
-      </div>*/}
+    let adminButtons, registerButton, warningText;
 
     var availableSpots = this.state.detail.limitOfParticipants - this.state.detail.registered;
-    if(this.props.read_only){
+    if(this.props.read_only) {
       registerButton = <span>Connect via Mist/Metamask to be able to register.</span>
-    }else if(this.state.accounts.length > 0){
+    }else if(this.state.accounts.length > 0) {
       if(this.state.detail.ended){
         registerButton = <span>This event is over </span>
-      }else if (availableSpots <= 0){
+      }else if (availableSpots <= 0) {
         registerButton = <span>No more spots left</span>
       }else{
         if (this.state.detail.encryption && this.showRegister()) {
@@ -290,7 +225,9 @@ class FormInput extends React.Component {
           var action = 'register';
         }
         registerButton = <RaisedButton primary={ this.showRegister() } disabled={!this.showRegister()}
-          label="register and deposit" className="btn"
+          label="register and deposit"
+          className="btn"
+          style={{ backgroundColor: '#32A1E4' }}
           onClick={this.handleAction.bind(this, action)}
         />
         warningText = <div style={{textAlign:'center', color:'red'}}>Please be aware that you <strong>cannot</strong> cancel once regiesterd. Please read FAQ section at ABOUT page on top right corner for more detail about this service.</div>
@@ -299,10 +236,6 @@ class FormInput extends React.Component {
       registerButton = <span>No account is set</span>
     }
 
-    var withdrawButton = <RaisedButton secondary={this.showWithdraw()} disabled={!this.showWithdraw()}
-      label="Withdraw" style={styles.btn}
-      onClick={this.handleAction.bind(this, 'withdraw')}
-    />
 
     {/*if (this.showRegister()) {
       var nameField = <TextField
@@ -318,7 +251,7 @@ class FormInput extends React.Component {
     var nameField = <TextField
       placeholder="@twitter_handle (required)"
       floatingLabelFixed={false}
-      value={this.state.name}
+      value={ this.state.name }
       onChange={ this.handleName.bind(this) }
       className="field field-name"
       style={ styles.nameField }
@@ -334,31 +267,73 @@ class FormInput extends React.Component {
           />
 
     return (
-      <Card style = { styles.card }>
-        <form>
-          { encryptionField }
+      <Card style = { styles.card } id="registration">
+        <form style={ styles.form }>
 
-          {/*<SelectField
-            value={ this.state.address }
-            onChange={this.handleSelect.bind(this)}
-            floatingLabelText="Account address"
-            floatingLabelFixed={true}
-            style={{width:'25em', verticalAlign:'top', margin:'0 5px'}}
-            >
-            {
-              this.state.accounts.map(account => {
-                return (<MenuItem value={account} primaryText={account} />)
-              })
-            }
-          </SelectField>*/}
-     
-          {withdrawButton}
-          {attendButton}
-          {adminButtons}
+          { this.state.isRegisterInfo ?
+            <div className="info-card">
+              <div>
+                <h4 style={{ fontSize: '18px', fontWeight: '400', margin: '0px 0px 15px' }} className="flex align-center">
+                  <span>Connecting Accounts</span>
+                  <IconButton onClick={ this.showRegisterInfo } size = { 15 } style={ styles.btnIcon }>
+                    <Avatar
+                      src={require("../images/close.svg")}
+                      className="icon"
+                      size = { 26 }
+                      styles={{ background: 'transparent' }}
+                    />
+                  </IconButton>
+                </h4>
+                <div style={{ color: '#7D7D7D', fontSize:'12px'}}>
+                  You need to connect your Twitter and Metamask account address and confirm below to participate. Currently, Metamask on android only works with Firefox.
+                  <a href="" style={{ color: '#32A1E4'}}>Download and install the Metamask Add-on here.</a>
+                </div>
+                <div className="flex align-center" style={{ justifyContent: 'space-around', marginTop: '30px' }}>
+                  <img src={require("../images/firefox.png")} style={{ marginRight :'20px', display: 'block', maxWidth: '76px'}}/>
+                  <img src={require("../images/metamask.png")} style={{ display: 'block', maxWidth: '76px' }}/>
+                </div>
+              </div>
+            </div> : null
+          }
+
+          <Typography
+            variant="title">
+              <span>Registration</span>
+              <IconButton onClick={ this.showRegisterInfo }>
+                <Avatar
+                  src={ require("../images/info.svg") }
+                  className="icon"
+                  size={ 15 }
+                  styles={{ background: 'transparent' }}
+                />
+              </IconButton>
+          </Typography>
+          <div>{ nameField }</div>
+          <div>{ address }</div>
+          <span
+            style={ styles.hint }
+          >
+            Metamask account connected
+          </span>
+
+          <div>
+             <Checkbox
+                label="Don’t list my Twitter name in the public participants list. (The admins will still see it)"
+                className="checkbox"
+                checked={ true }
+              />
+
+              <Checkbox
+                label="* By submitting my details I agree to deposit 0.002 ETH and in case I will not show up to the event my deposit will be distributed among all attendees. To be qualifed for the payout, I will be PHYSICALLY present at the venue by 6:30pm at the latest!"
+                className="checkbox"
+              />
+          </div>
+
+          <div>{ registerButton }</div>
         </form>
       </Card>
     );
   }
 }
 
-export default FormInput;
+export default RegistrationForm;

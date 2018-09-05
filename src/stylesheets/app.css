@@ -20,7 +20,10 @@
 
 body {
 	font-family: 'Roboto', sans-serif;
+	scroll-behavior: smooth;
 }
+
+
 
 .header {
 	height: 309px;
@@ -77,6 +80,11 @@ body {
 	padding: 0 !important;
 }
 
+button:disabled {
+	opacity: 0.5;
+	cursor: none;
+}
+
 .icon {
 	background-color: transparent !important;
 }
@@ -104,6 +112,12 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 15px !important;
+}
+
+@media (max-width: 480px) {
+	.field {
+		width: 100% !important;
+	}
 }
 
 .field {
@@ -178,6 +192,10 @@ body {
 @media (max-width: 680px) {
 	.user {
 		font-size: 12px;
+	}
+
+	.info-card {
+		width: 100%;
 	}
 }
 

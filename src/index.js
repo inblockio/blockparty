@@ -22,6 +22,8 @@ import Data from './components/Data';
 import Header from './components/Header';
 import ParticipantsInfo from './components/ParticipantsInfo';
 import RegistrationForm from './components/RegistrationForm';
+import Footer from './components/Footer';
+import TopBanner from './components/TopBanner';
 
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -309,8 +311,9 @@ window.onload = function() {
 
       <div>
         <MuiThemeProvider muiTheme={getMuiTheme()}>
-          <div style={{overflow: 'hidden', maxWidth: '1440px', margin: 'auto'}}> {/*TO DO*/}
+          <div style={{overflow: 'hidden', maxWidth: '1440px', margin: 'auto', paddingBottom: '50px'}}> {/*TO DO*/}
               <Header eventEmitter={ eventEmitter } />
+              <TopBanner />
               <Instruction eventEmitter={ eventEmitter } />
               <Notification eventEmitter={ eventEmitter } />
 
@@ -372,6 +375,7 @@ window.onload = function() {
                     contractAddress={ contractAddress }  />
                 </Grid>
               </Grid>
+              <Footer />
           </div>
         </MuiThemeProvider>
       </div>
