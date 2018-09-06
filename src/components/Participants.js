@@ -473,6 +473,10 @@ class Participants extends React.Component {
     return this.state.detail.ended
   }
 
+  isOwner(){
+    return this.state.address == this.state.detail.owner;
+  }
+
   render() {
     if( this.isOwner() ) {
       let makeAdmin =  <FlatButton
