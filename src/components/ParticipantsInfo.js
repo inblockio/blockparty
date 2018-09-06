@@ -161,7 +161,7 @@ class ParticipantsInfo extends React.Component {
 
   getPayoutPerPersonContent(detail) {
     if (detail.ended) {
-      payoutPerPerson = this.toEther(detail.deposit / this.state.attended);
+      let payoutPerPerson = this.toEther(detail.deposit / this.state.attended);
       return (
         <span style = {{ color: '#5F5F5F'}}> ETH { payoutPerPerson }</span>
       )
@@ -192,12 +192,12 @@ class ParticipantsInfo extends React.Component {
     }
   }
 
-  getAmountOfAttendessContent(detail, attendees) {
+  getAmountOfAttendessContent(detail) {
     let text = "No info available"
     if (detail.attended && detail.ended) {
       text = this.toNumber( detail.attended )
-    } else if (!detail.ended && attendees) {
-      text = attendees.length
+    } else if (!detail.ended && detail.registered) {
+      text = this.toNumber( detail.registered )
     }
 
     return (
@@ -270,7 +270,7 @@ class ParticipantsInfo extends React.Component {
             leftIcon = { getPersons() }
             disabled = {true}
             primaryText = { this.getAmountOfAttendessTitle(this.state.detail) }
-            secondaryText = { this.getAmountOfAttendessContent(this.state.detail, this.state.attendees) }
+            secondaryText = { this.getAmountOfAttendessContent(this.state.detail) }
           />
 
           </List>

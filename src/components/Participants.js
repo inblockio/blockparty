@@ -457,6 +457,21 @@ class Participants extends React.Component {
     this.props.eventEmitter.emit('attendees', []);
   }
 
+  participantStatus(){
+    var p = this.selectParticipant(this.state.participants, this.state.address);
+    if (p) {
+      return participantStatus(p, this.state.detail)
+    }else{
+      return 'Not registered';
+    }
+  }
+
+  selectParticipant(participants, address){
+    return participants.filter(function(p){
+       return p.address == address
+    })[0]
+  }
+
   showWithdraw() {
     return this.state.detail.canWithdraw && (this.participantStatus() == 'Won' || this.participantStatus() == 'Cancelled');
   }
@@ -477,19 +492,24 @@ class Participants extends React.Component {
     return this.state.address == this.state.detail.owner;
   }
 
+  isAdmin(){
+    if (!this.state.detail.admins) {
+      return false
+    }
+
+    return this.state.detail.admins.includes(this.state.address) || (this.state.detail.owner == this.state.address);
+  }
+
   render() {
 
-    let makeAdmin, payoutBtn, canselEvent, showAll;
-
-    if( this.isOwner() ) {
-      makeAdmin =  <FlatButton
+    let makeAdmin =  <FlatButton
         secondary={ true }
         style={ styles.btnAdmin }
         onClick={ this.handleAction.bind(this, 'grant') }
         children={ <span>Make admin</span> }
       />
 
-      payoutBtn =  <FlatButton
+    let payoutBtn =  <FlatButton
         secondary={ this.showPayback()} 
         disabled={!this.showPayback()}
         children={ <span>Open Payouts</span> }
@@ -497,7 +517,7 @@ class Participants extends React.Component {
         onClick={ this.handleAction.bind(this, 'payback') }
       />
 
-      canselEvent = <FlatButton
+    let canselEvent = <FlatButton
         secondary={this.showCancel()}
         disabled={!this.showCancel()}
         children={ <span> Cancel event </span> }
@@ -505,14 +525,13 @@ class Participants extends React.Component {
         onClick={this.handleAction.bind(this, 'cancel')}
       />
 
-      showAll = <FlatButton
+    let showAll = <FlatButton
         secondary={ this.showCancel() }
         disabled={ !this.showCancel() }
         children={ <span>Show All</span> }
         style={ styles.showAll }
         onClick={ this.handleAction.bind(this, 'cancel') }
       />
-    }
 
     let clearButton =
       <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
@@ -530,7 +549,7 @@ class Participants extends React.Component {
 
     return (
       <Card style={ styles.card } >
-        {this.state.participants.length ? 
+        {this.state.participants.length && this.isAdmin() ? 
           <div>
             <Typography variant="title" style={{ fontWeight: '400' }}>Admin</Typography>
             <div style={ styles.hint }>Metamask account recognised as admin</div>
@@ -551,9 +570,9 @@ class Participants extends React.Component {
             </Table>
             <p style={{color:'grey', fontSize:'12px', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
             { showAll }
-          </div> : null }
-          <div>{ payoutBtn }</div>
-          <div>{ canselEvent }</div>
+            <div>{ payoutBtn }</div>
+            <div>{ canselEvent }</div>
+          </div> : null }          
           { this.showWithdraw() ?
           <div style={{ marginTop: '20px' }}>
             <Typography variant="title" style={{ fontWeight: '400' }}>Payout</Typography>
