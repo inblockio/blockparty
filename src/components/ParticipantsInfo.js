@@ -96,7 +96,6 @@ class ParticipantsInfo extends React.Component {
 
     this.props.eventEmitter.on('detail', detail => {
       this.setState({ detail: detail });
-      console.log(this.state.detail)
     });
 
     this.props.eventEmitter.on('network', network => {
@@ -125,7 +124,91 @@ class ParticipantsInfo extends React.Component {
       this.state.accounts.includes( participant.address );
   }
 
+  toEther(value){
+    if(value){
+      // return math.round(this.props.web3.fromWei(value, "ether").toNumber(), 3).toString();
+      return this.props.web3.fromWei(value, "ether").toString();
+    }
+  }
+
+  toNumber(value){
+    if(value) return value.toNumber();
+  }
+
+  getDepositContent( detail ) {
+    if(detail.deposit){
+      return (
+        <span style = {{ color: '#5F5F5F'}}> ETH { this.toEther( detail.deposit ) }</span>
+      )
+    }else{
+      return (
+        <span style={ { color: '#5F5F5F'} }>No info available</span>
+      )
+    }
+  }
+
+  getPotContent( detail ) {
+    if(detail.totalBalance){
+      return (
+        <span style = {{ color: '#5F5F5F'}}> ETH { this.toEther( detail.totalBalance ) }</span>
+      )
+    }else{
+      return (
+        <span style={ { color: '#5F5F5F'} }>No info available</span>
+      )
+    }
+  }
+
+  getPayoutPerPersonContent(detail) {
+    if (detail.ended) {
+      payoutPerPerson = this.toEther(detail.deposit / this.state.attended);
+      return (
+        <span style = {{ color: '#5F5F5F'}}> ETH { payoutPerPerson }</span>
+      )
+    } else {
+      return (
+        <span style={ { color: '#5F5F5F'} }>No info available until event is finished</span>
+      )
+    }
+  }
+
+  getMaxAttendeesContent(detail) {
+    if (detail.limitOfParticipants) {
+      return (
+        <span style = {{ color: '#5F5F5F'}}> { this.toNumber( detail.limitOfParticipants ) }</span>
+      )
+    } else {
+      return (
+        <span style={ { color: '#5F5F5F'} }>No info available</span>
+      )
+    }
+  }
+
+  getAmountOfAttendessTitle(detail) {
+    if (detail.ended) {
+      return (<span>AMOUNT OF ATTENDEES</span>)
+    } else {
+      return (<span>AMOUNT OF REGISTRATIONs </span>)
+    }
+  }
+
+  getAmountOfAttendessContent(detail, attendees) {
+    let text = "No info available"
+    if (detail.attended && detail.ended) {
+      text = this.toNumber( detail.attended )
+    } else if (!detail.ended && attendees) {
+      text = attendees.length
+    }
+
+    return (
+      <span style={ { color: '#5F5F5F'} }>{ text }</span>
+    )
+  }
+
   render() {
+
+    let payoutPerPerson;
+
     return (
       <Card style={ styles.card }>
           <Typography
@@ -133,7 +216,7 @@ class ParticipantsInfo extends React.Component {
             align="center"
             className="mb-3"
           >
-            Participants
+            Participation
           </Typography>
 
           {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
@@ -147,11 +230,7 @@ class ParticipantsInfo extends React.Component {
             primaryText = {
               <span>DEPOSIT </span>
             }
-
-            secondaryText = {
-              <span
-                style = {{ color: '#5F5F5F'}}> ETH 0.02</span>
-            }
+            secondaryText = {this.getDepositContent(this.state.detail)}
           />
 
           <ListItem
@@ -162,10 +241,7 @@ class ParticipantsInfo extends React.Component {
               <span>TOTAL POT</span>
             }
 
-            secondaryText = {
-              <span
-                style = {{ color: '#5F5F5F' }}>0.046153846153846164</span>
-            }
+            secondaryText = { this.getPotContent(this.state.detail) }
           />
 
           <ListItem
@@ -176,10 +252,7 @@ class ParticipantsInfo extends React.Component {
               <span>TOTAL PAYOUT PER PERSON </span>
             }
 
-            secondaryText = {
-              <span
-                style = {{ color: '#5F5F5F' }}>ETH 0.0023</span>
-            }
+            secondaryText = { this.getPayoutPerPersonContent(this.state.detail) }
           />
 
           <ListItem
@@ -189,21 +262,15 @@ class ParticipantsInfo extends React.Component {
             primaryText = {
               <span>MAXIMUM AMOUNT OF REGISTRATIONs</span>
             }
-            secondaryText = {
-              <span style = {{ color: '#5F5F5F' }}>45</span>
-            }
+            secondaryText = { this.getMaxAttendeesContent(this.state.detail) }
           />
 
           <ListItem
             style = { styles.item }
             leftIcon = { getPersons() }
             disabled = {true}
-            primaryText = {
-              <span>AMOUNT OF ATTENDEES</span>
-            }
-            secondaryText = {
-              <span style = {{ color: '#5F5F5F' }}>36</span>
-            }
+            primaryText = { this.getAmountOfAttendessTitle(this.state.detail) }
+            secondaryText = { this.getAmountOfAttendessContent(this.state.detail, this.state.attendees) }
           />
 
           </List>
