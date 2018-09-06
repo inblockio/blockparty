@@ -474,38 +474,44 @@ class Participants extends React.Component {
   }
 
   render() {
-    let adminButtons;
+    if( this.isOwner() ) {
+      let makeAdmin =  <FlatButton
+        secondary={ true }
+        style={ styles.btnAdmin }
+        onClick={ this.handleAction.bind(this, 'grant') }
+        children={ <span>Make admin</span> }
+      />
 
-    let makeAdmin =  <FlatButton
-      secondary={ true }
-      style={ styles.btnAdmin }
-      onClick={ this.handleAction.bind(this, 'grant') }
-      children={ <span>Make admin</span> }
-    />
+      let payoutBtn =  <FlatButton
+        secondary={ this.showPayback()} 
+        disabled={!this.showPayback()}
+        children={ <span>Open Payouts</span> }
+        style={ styles.payoutBtn }
+        onClick={ this.handleAction.bind(this, 'payback') }
+      />
 
-    let payoutBtn =  <FlatButton
-      secondary={ this.showPayback()} 
-      disabled={!this.showPayback()}
-      children={ <span>Open Payouts</span> }
-      style={ styles.payoutBtn }
-      onClick={ this.handleAction.bind(this, 'payback') }
-    />
+      let canselEvent = <FlatButton
+        secondary={this.showCancel()}
+        disabled={!this.showCancel()}
+        children={ <span> Cancel event </span> }
+        style={ styles.canselEvent }
+        onClick={this.handleAction.bind(this, 'cancel')}
+      />
 
-    let canselEvent = <FlatButton
-      secondary={this.showCancel()}
-      disabled={!this.showCancel()}
-      children={ <span> Cancel event </span> }
-      style={ styles.canselEvent }
-      onClick={this.handleAction.bind(this, 'cancel')}
-    />
+      let showAll = <FlatButton
+        secondary={ this.showCancel() }
+        disabled={ !this.showCancel() }
+        children={ <span>Show All</span> }
+        style={ styles.showAll }
+        onClick={ this.handleAction.bind(this, 'cancel') }
+      />
+    }
 
-    let showAll = <FlatButton
-      secondary={ this.showCancel() }
-      disabled={ !this.showCancel() }
-      children={ <span>Show All</span> }
-      style={ styles.showAll }
-      onClick={ this.handleAction.bind(this, 'cancel') }
-    />
+    let clearButton =
+      <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
+        label="Clear" style={styles}
+        onClick={this.handleAction.bind(this, 'clear')}
+      />
 
     let withdrawButton = <FlatButton
       secondary={ this.showWithdraw() }
@@ -514,13 +520,6 @@ class Participants extends React.Component {
       style={ styles.withdrawButton }
       onClick={ this.handleAction.bind(this, 'withdraw') }
     />
-
-
-    let clearButton =
-      <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
-        label="Clear" style={styles}
-        onClick={this.handleAction.bind(this, 'clear')}
-      />
 
     return (
       <Card style={ styles.card } >
