@@ -285,7 +285,7 @@ class Participants extends React.Component {
   displayParticipants() {
     if(!this.state.detail.name) return(
       <TableRowColumn width={ 100 }>
-        <p>
+        {/*<p>
           <h5>No info available.</h5>
           The reason are more likely to be one of the followings.
           <ul>
@@ -297,7 +297,7 @@ class Participants extends React.Component {
             </li>
           </ul>
           Please follow the instructions at 'About' page to solve.
-        </p>
+        </p>*/}
       </TableRowColumn>
     )
 
@@ -530,25 +530,28 @@ class Participants extends React.Component {
 
     return (
       <Card style={ styles.card } >
-          <Typography variant="title" style={{ fontWeight: '400' }}>Admin</Typography>
-          <div style={ styles.hint }>Metamask account recognised as admin</div>
-          <div style={{ marginBottom: '10px', textAlign: 'left' }}>{ this.state.participants.length } Registrations</div>
-          {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
-          <QRCode  eventEmitter={this.props.eventEmitter} />*/}
-          <Table>
-            <TableHeader displaySelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
-              <TableRow style={{ border: 'none' }}>
-                <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin }</TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
-                <TableHeaderColumn style={{ width: '22%', textAlign: 'right'}} ></TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={ true }>
-              { this.displayParticipants() }
-            </TableBody>
-          </Table>
-          <p style={{color:'grey', fontSize:'12px', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
-          { showAll }
+        {this.state.participants.length ? 
+          <div>
+            <Typography variant="title" style={{ fontWeight: '400' }}>Admin</Typography>
+            <div style={ styles.hint }>Metamask account recognised as admin</div>
+            <div style={{ marginBottom: '10px', textAlign: 'left' }}>{ this.state.participants.length } Registrations</div>
+            {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
+            <QRCode  eventEmitter={this.props.eventEmitter} />*/}
+            <Table>
+              <TableHeader displaySelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
+                <TableRow style={{ border: 'none' }}>
+                  <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin }</TableHeaderColumn>
+                  <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
+                  <TableHeaderColumn style={{ width: '22%', textAlign: 'right'}} ></TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody displayRowCheckbox={ true }>
+                { this.displayParticipants() }
+              </TableBody>
+            </Table>
+            <p style={{color:'grey', fontSize:'12px', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
+            { showAll }
+          </div> : null }
           <div>{ payoutBtn }</div>
           <div>{ canselEvent }</div>
           { this.showWithdraw() ?
