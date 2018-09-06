@@ -478,15 +478,18 @@ class Participants extends React.Component {
   }
 
   render() {
+
+    let makeAdmin, payoutBtn, canselEvent, showAll;
+
     if( this.isOwner() ) {
-      let makeAdmin =  <FlatButton
+      makeAdmin =  <FlatButton
         secondary={ true }
         style={ styles.btnAdmin }
         onClick={ this.handleAction.bind(this, 'grant') }
         children={ <span>Make admin</span> }
       />
 
-      let payoutBtn =  <FlatButton
+      payoutBtn =  <FlatButton
         secondary={ this.showPayback()} 
         disabled={!this.showPayback()}
         children={ <span>Open Payouts</span> }
@@ -494,7 +497,7 @@ class Participants extends React.Component {
         onClick={ this.handleAction.bind(this, 'payback') }
       />
 
-      let canselEvent = <FlatButton
+      canselEvent = <FlatButton
         secondary={this.showCancel()}
         disabled={!this.showCancel()}
         children={ <span> Cancel event </span> }
@@ -502,7 +505,7 @@ class Participants extends React.Component {
         onClick={this.handleAction.bind(this, 'cancel')}
       />
 
-      let showAll = <FlatButton
+      showAll = <FlatButton
         secondary={ this.showCancel() }
         disabled={ !this.showCancel() }
         children={ <span>Show All</span> }
