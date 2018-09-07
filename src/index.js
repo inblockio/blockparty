@@ -313,7 +313,7 @@ window.onload = function() {
         <MuiThemeProvider muiTheme={getMuiTheme()}>
           <div style={{overflow: 'hidden', maxWidth: '1440px', margin: 'auto', paddingBottom: '50px'}}> {/*TO DO*/}
               <Header eventEmitter={ eventEmitter } />
-              <TopBanner />
+              <TopBanner eventEmitter={ eventEmitter } getDetail={ getDetail } getParticipants={ getParticipants } getAccounts={ getAccounts }/>
               <Instruction eventEmitter={ eventEmitter } />
               <Notification eventEmitter={ eventEmitter } />
 

@@ -556,6 +556,7 @@ class Participants extends React.Component {
       />
 
     let withdrawButton = <FlatButton
+      id="withdraw"
       secondary={ this.showWithdraw() }
       disabled={ !this.showWithdraw() }
       children={ <span>Withdraw</span> }
@@ -595,8 +596,8 @@ class Participants extends React.Component {
           <div style={{ marginTop: '20px' }}>
             <Typography variant="title" style={{ fontWeight: '400' }}>Payout</Typography>
             <span style={ styles.hint }>Metamask account connected with address:</span>
-            <div>0xc316319950bf01e18748ed807c05cbe64d48da6b</div>
-            <div style={ styles.hintBold }>You are entitled to withdraw ETH 0.0023</div>
+            <div> {this.state.address} </div>
+            <div style={ styles.hintBold }>You are entitled to withdraw ETH {web3.fromWei(this.state.detail.payoutAmount.toNumber())}</div>
             { withdrawButton }
           </div>) }
       </Card>

@@ -3,7 +3,7 @@ import React from 'react';
 import Divider from 'material-ui/Divider';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
-
+import participantStatus from '../util/participantStatus';
 
 const styles = {
 
@@ -43,7 +43,83 @@ class TopBanner extends React.Component {
     super(props);
 
     this.state = {
-      isWithdhraw: false
+      detail:{},
+      participants:[],
+    }
+  }
+
+  // UTILS / FIXME duplicated code
+
+
+  participantStatus(){
+    var p = this.selectParticipant(this.state.participants, this.state.address);
+    if (p) {
+      return participantStatus(p, this.state.detail)
+    }else{
+      return 'Not registered';
+    }
+  }
+
+  selectParticipant(participants, address){
+    return participants.filter(function(p){
+       return p.address == address
+    })[0]
+  }
+
+
+  // 
+
+  componentDidMount() {
+    this.props.eventEmitter.on('detail', detail => {
+      this.setState({ detail:detail });
+    });
+    this.props.getParticipants( participants =>{
+      this.setState({ participants });
+    });
+    this.props.eventEmitter.on('accounts_received', accounts => {
+      this.setState({
+        address:accounts[0],
+        accounts:accounts
+      })
+    });
+  }
+
+  canWithdraw() {
+    return this.state.detail.canWithdraw && (this.participantStatus() == 'Won' || this.participantStatus() == 'Cancelled');
+  }
+
+  canRegister() {
+    return this.state.detail.canRegister && this.participantStatus() == 'Not registered';
+  }
+
+  isEnded() {
+    return this.state.detail.ended;
+  }
+
+  headerText() {
+    if (this.isEnded()) {
+      return "The Event has ended";
+    } if (this.canWithdraw()) {
+      return "The Event has ended";
+    } else if (this.canRegister()) {
+      return "Register and get a chance to win ETH if someone misses the event!";
+    } else {
+      return "You can not register anymore. Payouts start soon."
+    }
+  }
+
+  headerButton() {
+    if (this.canWithdraw()) {
+      return (<div>
+        <a href="#withdraw" style={ styles.btn }>Withdraw now</a>
+        {/* <span style={{ fontSize: '12px', textAlign: 'center', color: '#5F5F5F', display: 'block' }}>7 days, 5 hours and 23 minutes left</span> */}
+      </div> )
+    } else if (this.canRegister()) {
+      return  (<div>
+        <a href="#registration" style={ styles.btn }>Register now</a>
+      </div>)
+    } else {
+      return (<div></div>)
     }
   }
 
@@ -51,14 +127,9 @@ class TopBanner extends React.Component {
     return (
       <div style={ styles.banner }>
         <Typography variant="title" style={ styles.title }>
-        { this.state.isWithdhraw ? 'The Event has ended and payouts will continue until the 04.09.2018' : 'Register and get a chance to win ETH if someone misses the event!' }</Typography>
-        { this.state.isWithdhraw ? 
-            <div>
-              <a href="#withdraw" style={ styles.btn }>Withdraw now</a>
-              <span style={{ fontSize: '12px', textAlign: 'center', color: '#5F5F5F', display: 'block' }}>7 days, 5 hours and 23 minutes left</span>
-            </div> :
-           <a href="#registration" style={ styles.btn }>Register now</a>
-        }
+          { this.headerText() }
+        </Typography>
+        { this.headerButton() }
       </div>
     );
   }
