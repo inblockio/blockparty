@@ -93,10 +93,10 @@ class ParticipantsScroll extends React.Component {
 
       return this.state.participants.map( (participant, id) => {
         return (
-          <a href={ `https://twitter.com/${participant.name}` } target="_blank">
+          <a href={ `https://twitter.com/${participant.name.replace("@", "")}` } target="_blank">
           <Avatar
             style={{verticalAlign:'middle'}}
-            src={`https://avatars.io/twitter/${name}`}
+            src={`https://avatars.io/twitter/${participant.name.replace("@", "")}`}
             size={ 43 }
             className="mr-2"
           />

@@ -5,6 +5,7 @@ import { List, ListItem } from 'material-ui/List';
 import Card from '@material-ui/core/Card';
 import FlatButton from 'material-ui/FlatButton';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui/Table';
+
 import Avatar from 'material-ui/Avatar';
 import Checkbox from 'material-ui/Checkbox';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -146,10 +147,11 @@ class Participants extends React.Component {
       attendees:[],
       detail:{},
       etherscan_url:null,
-      isDetails: false
+      showDetails: -1,
     };
 
      this.showDetails = this.showDetails.bind(this);
+     this.closeDetails = this.closeDetails.bind(this);
   }
 
   componentDidMount() {
@@ -221,32 +223,23 @@ class Participants extends React.Component {
     });  
   }
 
-  handleAttendees(participantAddress, event, isInputChecked) {
-    if (isInputChecked) {
-      this.state.attendees.push(participantAddress)
-    }else{
-      this.state.attendees = this.state.attendees.filter(function(a){
-        return a != participantAddress;
-      })
+  handleSelection(ids) {
+    let attendees = [];
+    if (ids == "all") {
+      this.state.attendees = this.state.participants;
+    } else if(ids == "none") {
+      this.state.attendees = [];
+    } else {
+      this.state.attendees = ids.map(id => {
+        return this.state.participants[id];
+      });
     }
+    
     this.props.eventEmitter.emit('attendees', this.state.attendees);
-    return true;
   }
 
-  yesNo(participant) {
-    if(participant.attended) {
-      return ( <Avatar src={ require('../images/сheck.svg') } size={ 26 } backgroundColor="transparent" /> );
-    }else{
-      if(this.isAdmin() && !this.state.detail.ended){
-        return (
-          <Checkbox
-            onCheck={this.handleAttendees.bind(this, participant.address)}
-          />
-        )
-      }else{
-        return ( <Avatar src={ require('../images/cross.svg') } size={ 20 } backgroundColor="transparent" /> );
-      }
-    }
+  yesNo(participant){
+    return participant.attended ? 'Yes' : '';
   }
 
   displayBalance(participant) {
@@ -343,15 +336,15 @@ class Participants extends React.Component {
         }
 
         return (
-          <TableRow  style={ rowStyle } key={ participant.id }>
-            { this.state.isDetails ?
+          <TableRow  style={ rowStyle } key={ participant.address }>
+            { this.state.showDetails == id ?
               <div className="participant_info">
                 <h4 className="flex align-center">
                   <span style={ styles.name } className={ participant.role ? 'active' : '' }>
                     { participant.name }
                   </span>
 
-                  <IconButton onClick={ this.showRegisterInfo } size = { 15 } style={ styles.btnIcon } onClick={ () => this.showDetails() }>
+                  <IconButton onClick={ this.showRegisterInfo } size = { 15 } style={ styles.btnIcon } onClick={ () => this.closeDetails() }>
                     <Avatar
                       src={require("../images/close.svg")}
                       className="icon"
@@ -375,17 +368,16 @@ class Participants extends React.Component {
               </div> : ''
             }
             <TableRowColumn style={{ width: '58%', paddingLeft: '15px'}} >
-              {/* { getTwitterIcon(participant.name) } */}
               <Avatar
                   style={{ verticalAlign:'middle' }}
-                  src={`https://avatars.io/twitter/${name}`}
+                  src={`https://avatars.io/twitter/${participant.name.replace("@", "")}`}
                   onError={() => this.addDefaultSrc()}
                   size={26}
                 />
               <span>
                 <a 
                   target='_blank'
-                  href={ `https://twitter.com/${participant.name}` }
+                  href={ `https://twitter.com/${participant.name.replace("@", "")}` }
                   className={ participant.role ? 'user user--active' : 'user' }
                 >{ participant.name }</a>
               </span>
@@ -396,7 +388,7 @@ class Participants extends React.Component {
               {/*<span>
                 { this.displayBalance(participant) }
               </span> It's important part*/}
-              <FlatButton secondary={true} onClick={ () => this.showDetails() } style={ styles.btn } children={ <span>details</span> }/>
+              <FlatButton secondary={true} onClick={ () => this.showDetails(id) } style={ styles.btn } children={ <span>details</span> }/>
             </TableRowColumn>
           </TableRow>
         )
@@ -406,15 +398,17 @@ class Participants extends React.Component {
     }
   }
 
-  showDetails() {
-    console.log('Click happened');
-    this.setState({ isDetails: !this.state.isDetails });
-    console.log(this.state.isDetails)
+  showDetails(id) {
+    this.setState({ showDetails: id });
+  }
+
+  closeDetails() {
+    this.setState({ showDetails: -1 });
   }
 
   addDefaultSrc(ev) {
-  ev.target.src = 'some default image url'
-}
+    ev.target.src = 'some default image url'
+  }
 
   handleAction(actionName) {
     var args = [];
@@ -472,8 +466,14 @@ class Participants extends React.Component {
     })[0]
   }
 
+
+
   showWithdraw() {
     return this.state.detail.canWithdraw && (this.participantStatus() == 'Won' || this.participantStatus() == 'Cancelled');
+  }
+
+  showAttend(){
+    return this.state.detail.canAttend
   }
 
   showPayback() {
@@ -496,11 +496,16 @@ class Participants extends React.Component {
     if (!this.state.detail.admins) {
       return false
     }
-
     return this.state.detail.admins.includes(this.state.address) || (this.state.detail.owner == this.state.address);
   }
 
+  enableAttendentsAdminButton() {
+    return this.state.attendees.length == 0;
+  }
+
   render() {
+
+    const numSelected = this.state.numSelected;
 
     let makeAdmin =  <FlatButton
         secondary={ true }
@@ -508,6 +513,13 @@ class Participants extends React.Component {
         onClick={ this.handleAction.bind(this, 'grant') }
         children={ <span>Make admin</span> }
       />
+
+    let markAttended =  <FlatButton
+      secondary={ true }
+      style={ styles.btnAdmin }
+      onClick={ this.handleAction.bind(this, 'attend') }
+      children={ <span>Mark attended</span> }
+    />
 
     let payoutBtn =  <FlatButton
         secondary={ this.showPayback()} 
@@ -556,10 +568,11 @@ class Participants extends React.Component {
             <div style={{ marginBottom: '10px', textAlign: 'left' }}>{ this.state.participants.length } Registrations</div>
             {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
             <QRCode  eventEmitter={this.props.eventEmitter} />*/}
-            <Table>
-              <TableHeader displaySelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
+
+            <Table multiSelectable={ true } onRowSelection={this.handleSelection.bind(this)}>
+              <TableHeader displaySelectAll={ true } enableSelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
                 <TableRow style={{ border: 'none' }}>
-                  <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin }</TableHeaderColumn>
+                  <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin } { markAttended }</TableHeaderColumn>
                   <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
                   <TableHeaderColumn style={{ width: '22%', textAlign: 'right'}} ></TableHeaderColumn>
                 </TableRow>
@@ -568,19 +581,20 @@ class Participants extends React.Component {
                 { this.displayParticipants() }
               </TableBody>
             </Table>
+
             <p style={{color:'grey', fontSize:'12px', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
             { showAll }
             <div>{ payoutBtn }</div>
             <div>{ canselEvent }</div>
           </div> : null }          
-          { this.showWithdraw() ?
+          { this.showWithdraw() && (
           <div style={{ marginTop: '20px' }}>
             <Typography variant="title" style={{ fontWeight: '400' }}>Payout</Typography>
             <span style={ styles.hint }>Metamask account connected with address:</span>
             <div>0xc316319950bf01e18748ed807c05cbe64d48da6b</div>
             <div style={ styles.hintBold }>You are entitled to withdraw ETH 0.0023</div>
             { withdrawButton }
-          </div> : null }
+          </div>) }
       </Card>
     );
   }

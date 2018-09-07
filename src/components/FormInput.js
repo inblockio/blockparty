@@ -216,56 +216,7 @@ class FormInput extends React.Component {
   }
 
   render() {
-    let adminButtons, registerButton, attendButton, warningText;
-
-    if(this.isAdmin()){
-      attendButton = <RaisedButton secondary={this.showAttend()} disabled={!this.showAttend()}
-        label="Batch Attend" style={styles}
-        onClick={this.handleAction.bind(this, 'attend')}
-      />
-    }
-
-    {/*if(this.isOwner()){
-      adminButtons = <div>
-        <RaisedButton secondary={true}
-          label="Grant admin" style={styles}
-          onClick={this.handleAction.bind(this, 'grant')}
-        />
-
-        <RaisedButton secondary={this.showPayback()} disabled={!this.showPayback()}
-          label="Payback" style={styles}
-          onClick={this.handleAction.bind(this, 'payback')}
-        />
-        <RaisedButton secondary={this.showCancel()} disabled={!this.showCancel()}
-          label="Cancel" style={styles}
-          onClick={this.handleAction.bind(this, 'cancel')}
-        />
-        <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
-          label="Clear" style={styles}
-          onClick={this.handleAction.bind(this, 'clear')}
-        />
-      </div>
-    }
-
-    adminButtons = <div>
-        <RaisedButton secondary={true}
-          label="Grant admin" style={styles}
-          onClick={this.handleAction.bind(this, 'grant')}
-        />
-
-        <RaisedButton secondary={this.showPayback()} disabled={!this.showPayback()}
-          label="Payback" style={styles}
-          onClick={this.handleAction.bind(this, 'payback')}
-        />
-        <RaisedButton secondary={this.showCancel()} disabled={!this.showCancel()}
-          label="Cancel" style={styles}
-          onClick={this.handleAction.bind(this, 'cancel')}
-        />
-        <RaisedButton secondary={this.showClear()} disabled={!this.showClear()}
-          label="Clear" style={styles}
-          onClick={this.handleAction.bind(this, 'clear')}
-        />
-      </div>*/}
+    let registerButton, warningText;
 
     var availableSpots = this.state.detail.limitOfParticipants - this.state.detail.registered;
     if(this.props.read_only){
@@ -298,11 +249,6 @@ class FormInput extends React.Component {
     }else{
       registerButton = <span>No account is set</span>
     }
-
-    var withdrawButton = <RaisedButton secondary={this.showWithdraw()} disabled={!this.showWithdraw()}
-      label="Withdraw" style={styles.btn}
-      onClick={this.handleAction.bind(this, 'withdraw')}
-    />
 
     {/*if (this.showRegister()) {
       var nameField = <TextField
@@ -352,9 +298,6 @@ class FormInput extends React.Component {
             }
           </SelectField>*/}
      
-          {withdrawButton}
-          {attendButton}
-          {adminButtons}
         </form>
       </Card>
     );
