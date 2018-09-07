@@ -242,6 +242,15 @@ window.onload = function() {
         })
     }
 
+    window.event = contract.allEvents({fromBlock:0});
+    let watcher = async function(err, result) {
+      if (result) {
+        console.log('watchEvent result', result);
+        getParticipants(()=>{});
+      }
+    }
+    window.event.watch(watcher);
+
     var gas = 1000000;
     // default gas price
     window.gasPrice = web3.toWei(3, 'gwei');
@@ -261,12 +270,14 @@ window.onload = function() {
         options.value = Math.pow(10,18) / 50; // 0.02 ETH deposit
       }
       args.push(options);
+      
       contract.then(function(instance){
         return instance[name].apply(this, args);
       })
       .then(function(trx) {
         eventEmitter.emit('notification', {status:'success', message:'Successfully Updated'});
         eventEmitter.emit('change');
+        // blockNumber
         getDetail();
       }).catch(function(e) {
         eventEmitter.emit('notification', {status:'error', message:'Error has occored'});

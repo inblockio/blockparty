@@ -171,6 +171,10 @@ class Participants extends React.Component {
       });
     });
 
+    this.props.eventEmitter.on('participants_updated', participants => {
+      this.setState({ participants })
+    });
+
     this.props.eventEmitter.on('accounts_received', accounts => {
       this.setState({
         address:accounts[0],
