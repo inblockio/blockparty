@@ -188,7 +188,7 @@ class ParticipantsInfo extends React.Component {
     if (detail.ended) {
       return (<span>AMOUNT OF ATTENDEES</span>)
     } else {
-      return (<span>AMOUNT OF REGISTRATIONs </span>)
+      return (<span>CURRENT AMOUNT OF REGISTRATIONs </span>)
     }
   }
 

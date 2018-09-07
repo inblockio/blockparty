@@ -235,7 +235,7 @@ class Participants extends React.Component {
       });
     }
     
-    this.props.eventEmitter.emit('attendees', this.state.attendees);
+    // this.props.eventEmitter.emit('attendees', this.state.attendees);
   }
 
   yesNo(participant){
@@ -362,7 +362,7 @@ class Participants extends React.Component {
                   <span>{ this.displayBalance(participant) }</span>
                 </div>
                 <div style={ styles.row } className="flex align-center justify-between">
-                  <span  style={{ fontSize: '12px', fontWeight: 'bold' }}>Account</span>
+                  <span  style={{ fontSize: '12px', fontWeight: 'bold' }}>Account:</span>
                   <span style={{ color: '#32A1E4' }}>{ participant.address }</span>
                 </div>
               </div> : ''
@@ -414,10 +414,14 @@ class Participants extends React.Component {
     var args = [];
     switch (actionName) {
       case 'grant':
-        args.push(this.state.attendees);
+        args.push(this.state.attendees.map ( attendee => {
+          return attendee.address;
+        }));
         break;
       case 'attend':
-        args.push(this.state.attendees);
+        args.push(this.state.attendees.map ( attendee => {
+          return attendee.address;
+        }));
         break;
       case 'register':
         args.push(this.state.name);
@@ -577,7 +581,7 @@ class Participants extends React.Component {
                   <TableHeaderColumn style={{ width: '22%', textAlign: 'right'}} ></TableHeaderColumn>
                 </TableRow>
               </TableHeader>
-              <TableBody displayRowCheckbox={ true }>
+              <TableBody displayRowCheckbox={ true } deselectOnClickaway={ false }>
                 { this.displayParticipants() }
               </TableBody>
             </Table>
