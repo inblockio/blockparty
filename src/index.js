@@ -19,7 +19,6 @@ import Participants from './components/Participants';
 import ParticipantsScroll from './components/ParticipantsScroll';
 import NetworkLabel from './components/NetworkLabel';
 import Data from './components/Data';
-import Header from './components/Header';
 import ParticipantsInfo from './components/ParticipantsInfo';
 import RegistrationForm from './components/RegistrationForm';
 import Footer from './components/Footer';
@@ -37,6 +36,43 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 import FlatButton from 'material-ui/FlatButton';
 import $ from 'jquery';
+
+import "./stylesheets/app.css";
+
+const styles = {
+
+  bull: {
+    display: 'block',
+    marginRight: '5px',
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    backgroundColor: '#1FD91B',
+  },
+
+  headerRight: {
+    color: '#fff',
+    fontSize: '10px',
+  },
+
+  btn: {
+    minWidth: '30px',
+    height: '16px',
+    lineHeight: '15px',
+    padding: '0 7px',
+    border: '1px solid #32A1E4',
+    borderRadius: '5px',
+    fontSize: '10px',
+    color: '#fff',
+    marginLeft: '10px'
+  },
+
+  heading: {
+    maxWidth: '450px',
+    margin: 'auto auto 10px 0',
+    color: '#fff',
+  }
+}
 
 function setup() {
   return new Promise(function(resolve,reject){
@@ -297,7 +333,7 @@ window.onload = function() {
     function getAccounts() {
       if(read_only){
         eventEmitter.emit('accounts_received', []);
-        eventEmitter.emit('instruction');
+        eventEmitter.emit('instruction'); 
         return false;
       }
       console.log('this is not read only!')
@@ -323,7 +359,27 @@ window.onload = function() {
       <div>
         <MuiThemeProvider muiTheme={getMuiTheme()}>
           <div style={{overflow: 'hidden', maxWidth: '1440px', margin: 'auto', paddingBottom: '50px'}}> {/*TO DO*/}
-              <Header eventEmitter={ eventEmitter } />
+              <header className="header"> 
+                 <AppBar
+                      iconElementLeft = {
+                        <span></span>
+                      }
+                      iconElementRight={
+                        <span className="flex align-center mr-1">
+                          { networkLabel }
+                          <FlatButton style={ styles.btn } children={ <span>About</span> } onClick={ () => { eventEmitter.emit('instruction')} } />
+                        </span>
+                      }
+                      />
+                 <Typography
+                    variant="display2"
+                    className="header__ttl"
+                    style={ styles.heading }
+                  >
+                    RChain Cooperative
+                    Developer Conference
+                  </Typography>
+                </header>
               <TopBanner eventEmitter={ eventEmitter } getDetail={ getDetail } getParticipants={ getParticipants } getAccounts={ getAccounts }/>
               <Instruction eventEmitter={ eventEmitter } />
               <Notification eventEmitter={ eventEmitter } />

@@ -68,6 +68,7 @@ class Header extends React.Component {
         />
        <Typography
        		variant="display2"
+       		className=" header__ttl"
        		style={ styles.heading }
        	>
           RChain Cooperative

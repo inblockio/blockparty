@@ -44,8 +44,12 @@ class Footer extends React.Component {
         <Divider />
         <Typography variant="title" style={ styles.title }>Sponsored by</Typography>
         <div style={ styles.holder }>
+        <a href="http://future.inblock.io/">
           <img src={require("../images/inblockio-Logo-birdstyle-full-on-white-768x199.png")} style={ styles.img } />
+        </a>
+        <a href="https://www.rchain.coop/">
           <img src={require("../images/RChain_Logo.png")} style={ styles.img } />
+        </a>
         </div>
       </footer>
     );

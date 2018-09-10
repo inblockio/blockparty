@@ -24,6 +24,7 @@ const styles = {
   },
 
   card: {
+    position: 'relative',
     paddingTop: '40px',
     boxShadow: 'none',
   },
@@ -36,6 +37,15 @@ const styles = {
     verticalAlign:'middle',
     backgroundColor: 'transparent'
   },
+
+  btnIcon: {
+    position: 'relative',
+    top: '3px',
+    width: '27px',
+    height: '27px',
+    margin: '0 0 0 auto',
+    paddingright: '0px'
+  }
 };
 
 const getDepositIcon = ( name ) => (
@@ -81,8 +91,11 @@ class ParticipantsInfo extends React.Component {
       attendees:[],
       detail:{},
       etherscan_url:null,
-      isDetails: false
+      isDetails: false,
+      isParticipantsInfo: false
     };
+
+    this.showParticipantsInfo = this.showParticipantsInfo.bind(this);
   }
 
   componentDidMount() {
@@ -205,18 +218,68 @@ class ParticipantsInfo extends React.Component {
     )
   }
 
+   showParticipantsInfo() {
+    this.setState({ isParticipantsInfo: !this.state.isParticipantsInfo })
+  }
+
   render() {
 
     let payoutPerPerson;
 
     return (
       <Card style={ styles.card }>
+        { this.state.isParticipantsInfo ?
+            <div className="info-card" style={{ top: '65px' }}>
+              <div>
+                <h4 style={{ fontSize: '18px', fontWeight: '400', margin: '0px 0px 15px', color: '#000', textAlign: 'center' }} className="flex align-center">
+                  <span style={{ textAlign: 'center', display: 'block', flex: '1 1 0%', paddingLeft: '12px' }}>How it works</span>
+                  <IconButton onClick={ this.showParticipantsInfo } size = { 15 } style={ styles.btnIcon }>
+                    <Avatar
+                      src={require("../images/close.svg")}
+                      className="icon"
+                      size = { 26 }
+                      styles={{ background: 'transparent' }}
+                    />
+                  </IconButton>
+                </h4>
+                <div style={{ color: '#7D7D7D', fontSize:'12px', textAlign: 'center'}}>
+                  You pay a small deposit when you register for the event. You lose your deposit if you do not turn up. You will get your deposit back and we split the deposit of whom did not turn up. You go to the event and may end up getting more money.
+                  <p style={{ maxWidth: '122px', margin: '10px auto 0 auto' }}>Register for event + pay deposit</p>
+                </div>
+                <div className="flex align-center" style={{ justifyContent: 'space-around', marginTop: '30px' }}>
+                  <div style={{ position: 'relative', flex: '1 1 0%', marginRight: '15px' }} >
+                    <div className="flex align-center">
+                      <span style={{ whiteSpace: 'nowrap' }}>Don’t attend</span>
+                      <img src={require("../images/arrow_left.svg")} />
+                    </div>
+                    <div style={{ textAlign: 'center', marginTop: '5px' }}>Lose deposit</div>
+                  </div>
+
+                  <div style={{ position: 'relative', flex: '1 1 0%', marginLeft: '15px' }}>
+                    <div className="flex align-center">
+                      <img src={require("../images/arrow_right.svg")} />
+                      <span >Attend</span>
+                    </div>
+                    <div style={{ textAlign: 'center', marginTop: '5px' }}>Get deposit back</div>
+                  </div>
+                </div>
+              </div>
+            </div> : null
+          }
           <Typography
             variant="display1"
             align="center"
             className="mb-3"
           >
-            Participation
+            <span>Participation</span>
+            <IconButton onClick={ this.showParticipantsInfo }>
+              <Avatar
+                src={ require("../images/info.svg") }
+                className="icon"
+                size={ 15 }
+                styles={{ background: 'transparent' }}
+              />
+            </IconButton>
           </Typography>
 
           {/*<NameSearch  eventEmitter={this.props.eventEmitter} />

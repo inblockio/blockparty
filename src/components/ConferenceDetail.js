@@ -237,7 +237,7 @@ class ConferenceDetail extends React.Component {
           />
 
           <ListItem
-            className="mb-2"
+            className="mb-2 map-container"
             leftIcon={ getLocationIcon() }
             disabled={true}
             style={ styles.item }
@@ -248,11 +248,11 @@ class ConferenceDetail extends React.Component {
                 </a>
               </span>
             }
-            primaryText="LOCATION"
+            primaryText={ <span className="map__ttl"> Location </span> }
             secondaryText={
-              <p style={{ color: '#5F5F5F'}}>
+              <p style={{ color: '#5F5F5F'}} className="map__ttl"> 
                 { this.state.location_text }
-                { this.state.location_sub_text }
+                 Skalitzer Strasse 85, 10997 Berlin
               </p>
             }
           />

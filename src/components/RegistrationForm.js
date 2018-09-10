@@ -26,7 +26,8 @@ const styles = {
     textAlign: 'center',
     flexDirection: 'column',
     alignItems: 'center',
-    margin: '0 auto'
+    margin: '0 auto',
+    paddingBottom: '40px'
   },
 
   btn: {
@@ -75,10 +76,12 @@ class RegistrationForm extends React.Component {
       attendees:[],
       participants:[],
       detail:{},
-      isRegisterInfo: false
+      isRegisterInfo: false,
+      isChecked :false
     };
 
     this.showRegisterInfo = this.showRegisterInfo.bind(this);
+    this.onChangeCheck = this.onChangeCheck.bind(this);
   }
 
   componentDidMount() {
@@ -199,18 +202,28 @@ class RegistrationForm extends React.Component {
     this.setState({ isRegisterInfo: !this.state.isRegisterInfo })
   }
 
+  onChangeCheck() {
+    this.setState({ isChecked: !this.state.isChecked })
+  }
+
   render() {
     let adminButtons, registerButton, warningText;
 
     var availableSpots = this.state.detail.limitOfParticipants - this.state.detail.registered;
     if(this.props.read_only) {
       registerButton = <span>Connect via Mist/Metamask to be able to register.</span>
-    }else if(this.state.accounts.length > 0) {
-      if(this.state.detail.ended){
+    } else if(this.state.accounts.length > 0) {
+
+      if(this.state.detail.ended) {
+
         registerButton = <span>This event is over </span>
-      }else if (availableSpots <= 0) {
+
+      } else if (availableSpots <= 0) {
+
         registerButton = <span>No more spots left</span>
-      }else{
+
+      } else {
+
         if (this.state.detail.encryption && this.showRegister()) {
           var encryptionField =  <TextField
                       floatingLabelText="Full name * (to be encrypted)"
@@ -221,12 +234,14 @@ class RegistrationForm extends React.Component {
                       style={{margin:'0 5px'}}
           />
           var action = 'registerWithEncryption';
-        }else{
+
+        } else {
           var action = 'register';
         }
-        registerButton = <RaisedButton primary={ this.showRegister() } disabled={!this.showRegister()}
+
+        registerButton = <RaisedButton primary={ this.showRegister() } disabled={ !this.showRegister() && !this.state.isChecked }
           label="register and deposit"
-          className="btn"
+          className="btn registerBtn"
           style={{ backgroundColor: '#32A1E4' }}
           onClick={this.handleAction.bind(this, action)}
         />
@@ -271,10 +286,10 @@ class RegistrationForm extends React.Component {
         <form style={ styles.form }>
 
           { this.state.isRegisterInfo ?
-            <div className="info-card">
+            <div className="info-card"  style={{ top: '28px' }}>
               <div>
                 <h4 style={{ fontSize: '18px', fontWeight: '400', margin: '0px 0px 15px' }} className="flex align-center">
-                  <span>Connecting Accounts</span>
+                  <span style={{ display: 'block', paddingLeft: '10px', color: '#000', flex: '1 1 0%' }}>Connecting Accounts</span>
                   <IconButton onClick={ this.showRegisterInfo } size = { 15 } style={ styles.btnIcon }>
                     <Avatar
                       src={require("../images/close.svg")}
@@ -284,9 +299,9 @@ class RegistrationForm extends React.Component {
                     />
                   </IconButton>
                 </h4>
-                <div style={{ color: '#7D7D7D', fontSize:'12px'}}>
+                <div style={{ color: '#7D7D7D', fontSize:'12px', textAlign: 'left'}}>
                   You need to connect your Twitter and Metamask account address and confirm below to participate. Currently, Metamask on android only works with Firefox.
-                  <a href="" style={{ color: '#32A1E4'}}>Download and install the Metamask Add-on here.</a>
+                  <a href="" style={{ color: '#32A1E4', display: 'block'}}>Download and install the Metamask Add-on here.</a>
                 </div>
                 <div className="flex align-center" style={{ justifyContent: 'space-around', marginTop: '30px' }}>
                   <img src={require("../images/firefox.png")} style={{ marginRight :'20px', display: 'block', maxWidth: '76px'}}/>
@@ -317,16 +332,14 @@ class RegistrationForm extends React.Component {
           </span>
 
           <div>
-             <Checkbox
-                label="Don’t list my Twitter name in the public participants list. (The admins will still see it)"
-                className="checkbox"
-                checked={ true }
-              />
-
-              <Checkbox
-                label="* By submitting my details I agree to deposit 0.002 ETH and in case I will not show up to the event my deposit will be distributed among all attendees. To be qualifed for the payout, I will be PHYSICALLY present at the venue by 6:30pm at the latest!"
-                className="checkbox"
-              />
+              <div className="checkbox-custom">
+                <input type="checkbox" id="submitting1" checked />
+                <label htmlFor="submitting1" >Don’t list my Twitter name in the public participants list. (The admins will still see it)</label>
+              </div>
+              <div className="checkbox-custom">
+                <input type="checkbox" id="submitting" onChange={ this.onChangeCheck } />
+                <label htmlFor="submitting" >* By submitting my details I agree to deposit 0.002 ETH and in case I will not show up to the event my deposit will be distributed among all attendees. To be qualifed for the payout, I will be PHYSICALLY present at the venue by 6:30pm at the latest!</label>
+              </div>
           </div>
 
           <div>{ registerButton }</div>

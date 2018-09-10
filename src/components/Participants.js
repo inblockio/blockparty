@@ -118,19 +118,34 @@ const styles = {
   },
 
   hintBold: {
-    marginTop: '10px',
+    marginTop: '2px',
     marginBottom: '25px',
     color: '#1FD91B',
     fontSize: '12px',
     fontWeight: 'bold'
   },
 
+  hintRed: {
+    marginBottom: '10px',
+    color: 'red'
+  },
+
   showAll: {
+    height: '58px',
     fontSize: '12px',
     marginBottom: '25px',
     padding: '0',
     border: 'none',
     color: '#55ACEE'
+  },
+
+  btnClose: {
+    position: 'relative',
+    top: '3px',
+    width: '27px',
+    height: '27px',
+    margin: '0 0 0 auto',
+    paddingRight: '0px'
   }
 };
 
@@ -148,10 +163,12 @@ class Participants extends React.Component {
       detail:{},
       etherscan_url:null,
       showDetails: -1,
+      isPayoutInfo: false
     };
 
      this.showDetails = this.showDetails.bind(this);
      this.closeDetails = this.closeDetails.bind(this);
+     this.showPayoutInfo = this.showPayoutInfo.bind(this);
   }
 
   componentDidMount() {
@@ -202,6 +219,11 @@ class Participants extends React.Component {
     });
   }
 
+  showPayoutInfo() {
+    this.setState({ isPayoutInfo: !this.state.isPayoutInfo })
+  }
+
+
   isAdmin(){
     return this.state.detail.admins.includes( this.state.address ) || ( this.state.detail.owner == this.state.address );
   }
@@ -242,19 +264,19 @@ class Participants extends React.Component {
     // this.props.eventEmitter.emit('attendees', this.state.attendees);
   }
 
-  yesNo(participant){
-    return participant.attended ? 'Yes' : '';
+  yesNo( participant ) {
+    return participant.attended ? <img  src={ require("../images/сheck.svg") } /> : <img  src={ require("../images/cross.svg") } />;
   }
 
-  displayBalance(participant) {
-    var message = participantStatus(participant, this.state.detail);
+  displayBalance( participant ) {
+    var message = participantStatus( participant, this.state.detail );
     console.log('status', message);
     let color, amount;
     switch(message) {
     case 'Won':
     case 'Withdrawn':
       color = 'green';
-      amount = web3.fromWei(this.state.detail.payoutAmount.toNumber());
+      amount = web3.fromWei( this.state.detail.payoutAmount.toNumber() );
       break;
     case 'Cancelled':
       color = 'red';
@@ -341,36 +363,6 @@ class Participants extends React.Component {
 
         return (
           <TableRow  style={ rowStyle } key={ participant.address }>
-            { this.state.showDetails == id ?
-              <div className="participant_info">
-                <h4 className="flex align-center">
-                  <span style={ styles.name } className={ participant.role ? 'active' : '' }>
-                    { participant.name }
-                  </span>
-
-                  <IconButton onClick={ this.showRegisterInfo } size = { 15 } style={ styles.btnIcon } onClick={ () => this.closeDetails() }>
-                    <Avatar
-                      src={require("../images/close.svg")}
-                      className="icon"
-                      size = { 26 }
-                      styles={{ background: 'transparent' }}
-                    />
-                  </IconButton>
-                </h4>
-                <div style={ styles.row } className="flex align-center justify-between">
-                  <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Attended:</span>
-                  <span>{ this.yesNo(participant) }</span>
-                </div>
-                <div style={ styles.row } className="flex align-center justify-between">
-                  <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Payout Status: </span>
-                  <span>{ this.displayBalance(participant) }</span>
-                </div>
-                <div style={ styles.row } className="flex align-center justify-between">
-                  <span  style={{ fontSize: '12px', fontWeight: 'bold' }}>Account:</span>
-                  <span style={{ color: '#32A1E4' }}>{ participant.address }</span>
-                </div>
-              </div> : ''
-            }
             <TableRowColumn style={{ width: '58%', paddingLeft: '15px'}} >
               <Avatar
                   style={{ verticalAlign:'middle' }}
@@ -394,6 +386,36 @@ class Participants extends React.Component {
               </span> It's important part*/}
               <FlatButton secondary={true} onClick={ () => this.showDetails(id) } style={ styles.btn } children={ <span>details</span> }/>
             </TableRowColumn>
+            { this.state.showDetails == id ?
+              <div className="participant_info">
+                <h4 className="flex align-center">
+                  <span style={ styles.name } className={ participant.role ? 'active' : '' }>
+                    { participant.name }
+                  </span>
+
+                  <IconButton onClick={ this.showRegisterInfo } size = { 15 } style={ styles.btnIcon } onClick={ () => this.closeDetails() }>
+                    <Avatar
+                      src={require("../images/close.svg")}
+                      className="icon"
+                      size = { 26 }
+                      styles={{ background: 'transparent' }}
+                    />
+                  </IconButton>
+                </h4>
+                <div style={ styles.row } className="flex align-center justify-between">
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px' }}>Attended:</span>
+                  <span>{ this.yesNo(participant) }</span>
+                </div>
+                <div style={ styles.row } className="flex align-center justify-between">
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px' }}>Payout Status: </span>
+                  <span>{ this.displayBalance(participant) }</span>
+                </div>
+                <div style={ styles.row } className="flex align-center justify-between">
+                  <span  style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px' }}>Account:</span>
+                  <span style={{ color: '#32A1E4' }}>{ participant.address }</span>
+                </div>
+              </div> : ''
+            }
           </TableRow>
         )
       })
@@ -547,10 +569,9 @@ class Participants extends React.Component {
 
     let showAll = <FlatButton
         secondary={ this.showCancel() }
-        disabled={ !this.showCancel() }
-        children={ <span>Show All</span> }
+        disabled={ this.state.participants.length < 7 }
+        children={ <div><div>Show All</div><img src={require("../images/arrow_down.svg")} /></div> }
         style={ styles.showAll }
-        onClick={ this.handleAction.bind(this, 'cancel') }
       />
 
     let clearButton =
@@ -577,31 +598,64 @@ class Participants extends React.Component {
             <div style={{ marginBottom: '10px', textAlign: 'left' }}>{ this.state.participants.length } Registrations</div>
             {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
             <QRCode  eventEmitter={this.props.eventEmitter} />*/}
+            <div style={{ position: 'relative' }}>
+              <Table multiSelectable={ true } onRowSelection={ this.handleSelection.bind(this) }>
+                <TableHeader displaySelectAll={ true } enableSelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
+                  <TableRow style={{ border: 'none' }}>
+                    <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin } { markAttended }</TableHeaderColumn>
+                    <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
+                    <TableHeaderColumn style={{ width: '22%', textAlign: 'right'}} ></TableHeaderColumn>
+                  </TableRow>
+                </TableHeader>
+                <TableBody displayRowCheckbox={ true } deselectOnClickaway={ false }>
+                  { this.displayParticipants() }
+                </TableBody>
+              </Table>
 
-            <Table multiSelectable={ true } onRowSelection={this.handleSelection.bind(this)}>
-              <TableHeader displaySelectAll={ true } enableSelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
-                <TableRow style={{ border: 'none' }}>
-                  <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin } { markAttended }</TableHeaderColumn>
-                  <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
-                  <TableHeaderColumn style={{ width: '22%', textAlign: 'right'}} ></TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody displayRowCheckbox={ true } deselectOnClickaway={ false }>
-                { this.displayParticipants() }
-              </TableBody>
-            </Table>
 
-            <p style={{color:'grey', fontSize:'12px', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
-            { showAll }
+              <p style={{color:'grey', fontSize:'12px', textAlign: 'center'}}>( Note: Admins are highlighted in <span className="user--active">green</span> )</p>
+                { showAll }
+            </div>
             <div>{ payoutBtn }</div>
             <div>{ canselEvent }</div>
-          </div> : null }          
+          </div> : null }
           { this.showWithdraw() && (
-          <div style={{ marginTop: '20px' }}>
-            <Typography variant="title" style={{ fontWeight: '400' }}>Payout</Typography>
+          <div style={{ marginTop: '20px', position: 'relative' }}>
+            { this.state.isPayoutInfo ?
+              <div className="info-card" style={{ top: '28px' }}>
+                <div>
+                  <h4 style={{ fontSize: '18px', fontWeight: '400', margin: '0px 0px 5px', color: '#000', textAlign: 'center' }} className="flex align-center">
+                    <span style={{ textAlign: 'center', display: 'block', flex: '1 1 0%', paddingLeft: '12px' }}>Withdrawal period ends in</span>
+                    <IconButton onClick={ this.showPayoutInfo } size = { 15 } style={ styles.btnClose }>
+                      <Avatar
+                        src={require("../images/close.svg")}
+                        className="icon"
+                        size = { 26 }
+                        styles={{ background: 'transparent' }}
+                      />
+                    </IconButton>
+                  </h4>
+                  <div style={ styles.hintRed }>7 days, 5 hours and 23 minutes</div>
+                  <div style={{ color: '#000000', fontSize:'12px', textAlign: 'left'}}>
+                    Please withdraw your payout. If you forget to withdraw, everything will be automatically distributed among all participants.
+                  </div>
+                </div>
+              </div> : null
+            }
+            <Typography variant="title" style={{ fontWeight: '400' }} className="mb-3"><span>Payout</span>
+              <IconButton onClick={ this.showPayoutInfo }>
+                <Avatar
+                  src={ require("../images/info.svg") }
+                  className="icon"
+                  size={ 15 }
+                  styles={{ background: 'transparent' }}
+                />
+              </IconButton>
+            </Typography>
+            
             <span style={ styles.hint }>Metamask account connected with address:</span>
             <div> {this.state.address} </div>
-            <div style={ styles.hintBold }>You are entitled to withdraw ETH {web3.fromWei(this.state.detail.payoutAmount.toNumber())}</div>
+            <div style={ styles.hintBold }>You are entitled to withdraw ETH {/*{web3.fromWei(this.state.detail.payoutAmount.toNumber())}*/}</div>
             { withdrawButton }
           </div>) }
       </Card>

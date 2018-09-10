@@ -42,6 +42,7 @@ body {
 
 .participant_info {
 	position: absolute;
+	right: 32px;
 	z-index: 3;
 	max-width: 350px;
 	width: 100%;
@@ -78,6 +79,12 @@ body {
 
 .info-card button {
 	padding: 0 !important;
+}
+
+@media (min-width: 400px) {
+	.info-card {
+		min-width: 358px;
+	}
 }
 
 button:disabled {
@@ -174,10 +181,82 @@ button:disabled {
 }
 
 .checkbox label {
+	padding-left: 15px;
 	font-size: 12px;
 	color: #7D7D7D !important;
 	text-align: left;
 }
+
+.checkbox div > span {
+	left: 2px !important;
+}
+
+
+.checkbox-custom {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-left: 14px;
+  margin-bottom: 10px;
+}
+  .checkbox-custom input {
+    display: none; }
+
+    .checkbox-custom input:checked + label::after {
+      -webkit-transform: scale(1);
+              transform: scale(1); }
+
+    .checkbox-custom input:checked + label::before {
+    	border-color: rgb(0, 188, 212);
+    }
+
+  .checkbox-custom label {
+    position: relative;
+    padding-left: 45px;
+    color: #828282;
+    cursor: pointer;
+    text-align: left;
+    font-size: 12px;
+    line-height: 1.5; }
+
+    .checkbox-custom label a {
+      color: #828282;
+      background-size: 100% 100%; }
+      .checkbox-custom label a:hover, .checkbox-custom label a:focus {
+        background-size: 0 100%; }
+    .checkbox-custom label::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 3px;
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+      border: 2px solid #000;
+      -webkit-box-sizing: border-box;
+              box-sizing: border-box;
+      border-radius: 2px; }
+
+    .checkbox-custom label::after {
+      content: '';
+      position: absolute;
+      left: 2px;
+	    top: 4px;
+	    width: 15px;
+	    height: 15px;
+      background-image: url("data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIxNyIgdmlld0JveD0iMCAwIDIwIDE3Ij4NCiAgICA8cGF0aCBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Ik0xNy45OTIgMEwyMCAxLjgwNyA2Ljg1NyAxNi40MSAwIDkuMDI1bDEuOTgtMS44MzggNC44NDYgNS4yMnoiLz4NCjwvc3ZnPg0K");
+      background-color: rgb(0, 188, 212);
+      background-size: 95% 95%;
+      background-repeat: no-repeat;
+      -webkit-transform: scale(0);
+              transform: scale(0);
+      transition: all 0.2s linear 0s;
+    }
 
 @media (max-width: 960px) {
 	.xs-order-2 {
@@ -194,9 +273,62 @@ button:disabled {
 		font-size: 12px;
 	}
 
+	.participant_info {
+		max-width: 89%;
+	}
+
+	.header {
+		height: 140px;
+    background-size: cover;
+    padding-bottom: 10px;
+	}
+
+	.header__ttl {
+		font-size: 18px !important;
+    max-width: 181px !important;
+    font-weight: bold !important;
+	}
+
 	.info-card {
 		width: 100%;
+		max-width: 95%;
 	}
+
+	.map-container {
+		padding-right: 0 !important;
+		padding-left: 0 !important;
+	}
+
+	.map-container a {
+		display: block;
+	}
+
+		.map-container a img {
+			max-height: none !important;
+			max-width: 100%;
+			margin-top: 20px;
+		}
+
+	.map-container  > img {
+		left: 7px !important;
+	}
+
+	.map__ttl {
+		padding-left: 48px !important;
+	}
+
+	.MuiGrid-container-30 {
+		padding-right: 0 !important;
+		padding-left: 0 !important;
+	}
+}
+
+.registerBtn button {
+	background-color: rgb(50, 161, 228) !important;
+}
+
+.registerBtn button span {
+	color: #fff !important;
 }
 
 .flex {
