@@ -279,6 +279,7 @@ button:disabled {
 
 	.header {
 		height: 140px;
+		padding-top: 0px;
     background-size: cover;
     padding-bottom: 10px;
 	}
@@ -286,7 +287,7 @@ button:disabled {
 	.header__ttl {
 		font-size: 18px !important;
     max-width: 181px !important;
-    font-weight: bold !important;
+    font-weight: 500 !important;
 	}
 
 	.info-card {

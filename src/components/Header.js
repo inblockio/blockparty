@@ -53,6 +53,7 @@ class Header extends React.Component {
           iconElementLeft = {
           	<span></span>
           }
+          titleStyle={{textAlign:'center', fontSize:'0px', height: '0px'}}
           iconElementRight={
             <span className="flex align-center">
     					<span

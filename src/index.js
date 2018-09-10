@@ -64,7 +64,8 @@ const styles = {
     borderRadius: '5px',
     fontSize: '10px',
     color: '#fff',
-    marginLeft: '10px'
+    marginLeft: '10px',
+    textDecoration:'none'
   },
 
   heading: {
@@ -361,13 +362,13 @@ window.onload = function() {
           <div style={{overflow: 'hidden', maxWidth: '1440px', margin: 'auto', paddingBottom: '50px'}}> {/*TO DO*/}
               <header className="header"> 
                  <AppBar
-                      iconElementLeft = {
-                        <span></span>
-                      }
+                      style={{ maxHeight: '40px'}}
+                      titleStyle={{textAlign:'center', fontSize:'0px', height: '0px'}}
+                      iconElementLeft = { <span></span> }
                       iconElementRight={
                         <span className="flex align-center mr-1">
                           { networkLabel }
-                          <FlatButton style={ styles.btn } children={ <span>About</span> } onClick={ () => { eventEmitter.emit('instruction')} } />
+                          <a href=" https://github.com/inblockio/blockparty/blob/master/README.md" target="_blank" style={ styles.btn }><span>About</span> </a>
                         </span>
                       }
                       />

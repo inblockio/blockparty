@@ -51,7 +51,8 @@ const styles = {
   },
 
   btnIcon: {
-    margin: '0 0 0 auto'
+    margin: '0 0 0 auto',
+    paddingRight: '0px'
   },
 
   btnAdmin: {
@@ -107,7 +108,9 @@ const styles = {
   },
 
   row: {
-    marginBottom: '15px'
+    marginBottom: '15px',
+    paddingRight:'10px',
+    paddingLeft: '10px'
   },
 
   hint: {
