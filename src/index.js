@@ -213,7 +213,9 @@ window.onload = function() {
             'date': metadata.date,
             'map_url': metadata.map_url,
             'location_text': metadata.location_text,
-            'description_text': metadata.description_text
+            'description_text': metadata.description_text,
+            'withdraw_end_date': metadata.withdraw_end_date,
+            'latest_date_to_come': metadata.latest_date_to_come
           }
           if(detail.ended){
             detail.canRegister = false

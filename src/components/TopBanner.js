@@ -76,6 +76,9 @@ class TopBanner extends React.Component {
     this.props.getParticipants( participants =>{
       this.setState({ participants });
     });
+    this.props.eventEmitter.on('participants_updated', participants => {
+      this.setState({ participants })
+    });
     this.props.eventEmitter.on('accounts_received', accounts => {
       this.setState({
         address:accounts[0],
@@ -97,24 +100,37 @@ class TopBanner extends React.Component {
   }
 
   headerText() {
+
+    let withdraw_date = this.state.detail.withdraw_end_date;
+    let text = "";
     if (this.isEnded()) {
-      return "The Event has ended";
-    } if (this.canWithdraw()) {
-      return "The Event has ended";
-    } else if (this.canRegister()) {
-      return "Register and get a chance to win ETH if someone misses the event!";
-    } else {
-      return "You can not register anymore. Payouts start soon."
+      text = "The Event has ended";
     }
+    
+    if (this.canWithdraw()) {
+      text = "The Event has ended and payouts will continue until the " + withdraw_date;
+    } else if (this.canRegister()) {
+      var availableSpots = this.state.detail.limitOfParticipants - this.state.detail.registered;
+      if (availableSpots <= 0){
+        text = "Unfortunately no spots left";
+      } else {
+        text = "Register and get a chance to win ETH if someone misses the event!";
+      }       
+    } else {
+      text = "You can not register anymore. Payouts start soon."
+    }
+
+    return text;
   }
 
   headerButton() {
+    var availableSpots = this.state.detail.limitOfParticipants - this.state.detail.registered;
     if (this.canWithdraw()) {
       return (<div>
         <a href="#withdraw" style={ styles.btn }>Withdraw now</a>
         {/* <span style={{ fontSize: '12px', textAlign: 'center', color: '#5F5F5F', display: 'block' }}>7 days, 5 hours and 23 minutes left</span> */}
       </div> )
-    } else if (this.canRegister()) {
+    } else if (this.canRegister() && availableSpots > 0) {
       return  (<div>
         <a href="#registration" style={ styles.btn }>Register now</a>
       </div>)

@@ -103,6 +103,7 @@ class ParticipantsScroll extends React.Component {
             src={`https://avatars.io/twitter/${participant.name.replace("@", "")}`}
             size={ 43 }
             className="mr-2"
+            onError={(ev) => this.addDefaultSrc(ev)}
           />
           </a>
         )
@@ -110,6 +111,10 @@ class ParticipantsScroll extends React.Component {
     } else {
       return(<div style={{textAlign:'center'}} width={ 100 } >No one has registered yet. Be the first to register by typing your twitter handle and press 'Register'</div>)
     }
+  }
+
+  addDefaultSrc(ev) {
+    ev.target.src = require("../images/profile.svg");
   }
 
   render() {

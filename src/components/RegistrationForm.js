@@ -212,6 +212,12 @@ class RegistrationForm extends React.Component {
     this.setState({ isChecked: !this.state.isChecked })
   }
 
+  termsText() {
+    let deposit = "" + web3.fromWei(this.state.detail.deposit);
+    let date = this.state.detail.latest_date_to_come;
+    return (<label htmlFor="submitting" >* By submitting my details I agree to deposit { deposit } ETH and in case I will not show up to the event my deposit will be distributed among all attendees. To be qualifed for the payout, I will be PHYSICALLY present at the venue by { date } at the latest!</label>)
+  }
+
   render() {
     let adminButtons, registerButton, warningText;
 
@@ -245,7 +251,7 @@ class RegistrationForm extends React.Component {
           var action = 'register';
         }
 
-        registerButton = <RaisedButton primary={ this.showRegister() } disabled={ !this.showRegister() && !this.state.isChecked }
+        registerButton = <RaisedButton primary={ this.showRegister() } disabled={ !this.showRegister() || !this.state.isChecked }
           label="register and deposit"
           className="btn registerBtn"
           style={{ backgroundColor: '#32A1E4' }}
@@ -317,38 +323,43 @@ class RegistrationForm extends React.Component {
             </div> : null
           }
 
-          <Typography
-            variant="title">
-              <span style={{ paddingLeft: '16px' }}>Registration</span>
-              <IconButton onClick={ this.showRegisterInfo }>
-                <Avatar
-                  src={ require("../images/info.svg") }
-                  className="icon"
-                  size={ 15 }
-                  styles={{ background: 'transparent' }}
-                />
-              </IconButton>
-          </Typography>
-          <div>{ nameField }</div>
-          <div>{ address }</div>
-          <span
-            style={ styles.hint }
-          >
-            Metamask account connected
-          </span>
-
+          { this.showRegister() && (
           <div>
-              <div className="checkbox-custom">
-                <input type="checkbox" id="submitting1" />
-                <label htmlFor="submitting1" onChange={ this.twitterStatus }>Don’t list my Twitter name in the public participants list. (The admins will still see it)</label>
-              </div>
-              <div className="checkbox-custom">
-                <input type="checkbox" id="submitting" onChange={ this.onChangeCheck } />
-                <label htmlFor="submitting" >* By submitting my details I agree to deposit 0.002 ETH and in case I will not show up to the event my deposit will be distributed among all attendees. To be qualifed for the payout, I will be PHYSICALLY present at the venue by 6:30pm at the latest!</label>
-              </div>
-          </div>
+            <Typography
+              variant="title">
+                <span style={{ paddingLeft: '16px' }}>Registration</span>
+                <IconButton onClick={ this.showRegisterInfo }>
+                  <Avatar
+                    src={ require("../images/info.svg") }
+                    className="icon"
+                    size={ 15 }
+                    styles={{ background: 'transparent' }}
+                  />
+                </IconButton>
+            </Typography>
+            <div>{ nameField }</div>
+            <div>{ address }</div>
+            <span
+              style={ styles.hint }
+            >
+              Metamask account connected
+            </span>
 
-          <div>{ registerButton }</div>
+            <div>
+                <div className="checkbox-custom">
+                  <input type="checkbox" id="submitting1" />
+                  <label htmlFor="submitting1" onChange={ this.twitterStatus }>Don’t list my Twitter name in the public participants list. (The admins will still see it)</label>
+                </div>
+                <div className="checkbox-custom">
+                  <input type="checkbox" id="submitting" onChange={ this.onChangeCheck } />
+                  {/* <label htmlFor="submitting" >* By submitting my details I agree to deposit ETH and in case I will not show up to the event my deposit will be distributed among all attendees. To be qualifed for the payout, I will be PHYSICALLY present at the venue by { this.state.detail.latest_date_to_come } at the latest!</label> */}
+                  { this.termsText() }
+                </div>
+            </div>
+
+            <div>{ registerButton }</div>
+          </div>)
+          }
         </form>
       </Card>
     );

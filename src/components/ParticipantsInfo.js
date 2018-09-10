@@ -173,8 +173,10 @@ class ParticipantsInfo extends React.Component {
   }
 
   getPayoutPerPersonContent(detail) {
+    
     if (detail.ended) {
-      let payoutPerPerson = this.toEther(detail.deposit / this.state.attended);
+      let payoutPerPerson = this.toEther(detail.totalBalance / detail.attended);
+      //web3.fromWei(detail.payoutAmount.toNumber());
       return (
         <span style = {{ color: '#5F5F5F'}}> ETH { payoutPerPerson }</span>
       )

@@ -381,7 +381,7 @@ class Participants extends React.Component {
               <Avatar
                   style={{ verticalAlign:'middle' }}
                   src={`https://avatars.io/twitter/${participant.name.replace("@", "")}`}
-                  onError={() => this.addDefaultSrc()}
+                  onError={(ev) => this.addDefaultSrc(ev)}
                   size={26}
                 />
               <span>
@@ -447,7 +447,7 @@ class Participants extends React.Component {
   }
 
   addDefaultSrc(ev) {
-    ev.target.src = 'some default image url'
+    ev.target.src = require("../images/profile.svg");
   }
 
   handleAction(actionName) {
@@ -639,7 +639,7 @@ class Participants extends React.Component {
               <div className="info-card" style={{ top: '28px' }}>
                 <div>
                   <h4 style={{ fontSize: '18px', fontWeight: '400', margin: '0px 0px 5px', color: '#000', textAlign: 'center' }} className="flex align-center">
-                    <span style={{ textAlign: 'center', display: 'block', flex: '1 1 0%', paddingLeft: '12px' }}>Withdrawal period ends in</span>
+                    <span style={{ textAlign: 'center', display: 'block', flex: '1 1 0%', paddingLeft: '12px' }}>Withdrawal period ends on</span>
                     <IconButton onClick={ this.showPayoutInfo } size = { 15 } style={ styles.btnClose }>
                       <Avatar
                         src={require("../images/close.svg")}
@@ -649,7 +649,7 @@ class Participants extends React.Component {
                       />
                     </IconButton>
                   </h4>
-                  <div style={ styles.hintRed }>7 days, 5 hours and 23 minutes</div>
+                  <div style={ styles.hintRed }>{ this.state.withdraw_end_date }</div>
                   <div style={{ color: '#000000', fontSize:'12px', textAlign: 'left'}}>
                     Please withdraw your payout. If you forget to withdraw, everything will be automatically distributed among all participants.
                   </div>
@@ -669,7 +669,7 @@ class Participants extends React.Component {
             
             <span style={ styles.hint }>Metamask account connected with address:</span>
             <div> {this.state.address} </div>
-            <div style={ styles.hintBold }>You are entitled to withdraw ETH {/*{web3.fromWei(this.state.detail.payoutAmount.toNumber())}*/}</div>
+            <div style={ styles.hintBold }>You are entitled to withdraw ETH {web3.fromWei(this.state.detail.payoutAmount.toNumber())}</div>
             { withdrawButton }
           </div>) }
       </Card>
