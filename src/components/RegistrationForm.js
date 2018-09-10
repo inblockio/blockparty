@@ -77,11 +77,13 @@ class RegistrationForm extends React.Component {
       participants:[],
       detail:{},
       isRegisterInfo: false,
-      isChecked :false
+      isChecked :false,
+      allowTwitter: false
     };
 
     this.showRegisterInfo = this.showRegisterInfo.bind(this);
     this.onChangeCheck = this.onChangeCheck.bind(this);
+    this.twitterStatus = this.twitterStatus.bind(this);
   }
 
   componentDidMount() {
@@ -183,6 +185,10 @@ class RegistrationForm extends React.Component {
 
   showAttend(){
     return this.state.detail.canAttend
+  }
+
+  twitterStatus() {
+    this.setState({ allowTwitter: !this.state.allowTwitter })
   }
 
 
@@ -313,7 +319,7 @@ class RegistrationForm extends React.Component {
 
           <Typography
             variant="title">
-              <span>Registration</span>
+              <span style={{ paddingLeft: '16px' }}>Registration</span>
               <IconButton onClick={ this.showRegisterInfo }>
                 <Avatar
                   src={ require("../images/info.svg") }
@@ -333,8 +339,8 @@ class RegistrationForm extends React.Component {
 
           <div>
               <div className="checkbox-custom">
-                <input type="checkbox" id="submitting1" checked />
-                <label htmlFor="submitting1" >Don’t list my Twitter name in the public participants list. (The admins will still see it)</label>
+                <input type="checkbox" id="submitting1" />
+                <label htmlFor="submitting1" onChange={ this.twitterStatus }>Don’t list my Twitter name in the public participants list. (The admins will still see it)</label>
               </div>
               <div className="checkbox-custom">
                 <input type="checkbox" id="submitting" onChange={ this.onChangeCheck } />

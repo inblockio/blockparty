@@ -285,7 +285,7 @@ class ParticipantsInfo extends React.Component {
           {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
           <QRCode  eventEmitter={this.props.eventEmitter} />*/}
 
-          <List>
+          <List className="list">
             <ListItem 
             leftIcon = { getDepositIcon() }
             disabled = { true }

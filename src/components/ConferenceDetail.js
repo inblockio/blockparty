@@ -207,55 +207,58 @@ class ConferenceDetail extends React.Component {
               <p>Name{this.getNameContent(this.state.name, this.props.contractAddress)}</p>
             }
           />*/}
+          <div className="list">
+            <ListItem
+              className="mb-2"
+              leftIcon={ getCalendarIcon() }
+              disabled={ true }
+              style={ styles.item }
+              primaryText="TIME AND DATE"
+              secondaryText={
+                <p style={{ color: '#5F5F5F'}}> {this.getDateContent(this.state.date)}</p>
+              }
+            />
+          </div>
+          <div className="list">
+            <ListItem
+              className="mb-2"
+              leftIcon={ getDescriptionIcon() }
+              disabled={ true }
+              style={ styles.item }
+              primaryText="DESCRIPTION"
+              secondaryText={
+                <p style={{ color: '#5F5F5F'}}>
+                  <span style={ styles.overflow }
+                    dangerouslySetInnerHTML={ {__html:this.state.description_text} }
+                  />
+                </p>
+              }
 
-          <ListItem
-            className="mb-2"
-            leftIcon={ getCalendarIcon() }
-            disabled={ true }
-            style={ styles.item }
-            primaryText="TIME AND DATE"
-            secondaryText={
-              <p style={{ color: '#5F5F5F'}}> {this.getDateContent(this.state.date)}</p>
-            }
-          />
-
-          <ListItem
-            className="mb-2"
-            leftIcon={ getDescriptionIcon() }
-            disabled={ true }
-            style={ styles.item }
-            primaryText="DESCRIPTION"
-            secondaryText={
-              <p style={{ color: '#5F5F5F'}}>
-                <span style={ styles.overflow }
-                  dangerouslySetInnerHTML={ {__html:this.state.description_text} }
-                />
-              </p>
-            }
-
-            secondaryTextLines={ 2 }
-          />
-
-          <ListItem
-            className="mb-2 map-container"
-            leftIcon={ getLocationIcon() }
-            disabled={true}
-            style={ styles.item }
-            children={
-              <span style={{ marginTop: '15px', order: '3' }}>
-                <a target='_blank' style={{ color: '#5F5F5F'}} href={this.state.map_url}>
-                  <img src={require('../images/map.png')} style={{ objectFit: 'contain', display: 'block', maxHeight: '100px' }}/>
-                </a>
-              </span>
-            }
-            primaryText={ <span className="map__ttl"> Location </span> }
-            secondaryText={
-              <p style={{ color: '#5F5F5F'}} className="map__ttl"> 
-                { this.state.location_text }
-                 Skalitzer Strasse 85, 10997 Berlin
-              </p>
-            }
-          />
+              secondaryTextLines={ 2 }
+            />
+          </div>
+          <div>
+            <ListItem
+              className="mb-2 map-container"
+              leftIcon={ getLocationIcon() }
+              disabled={true}
+              style={ styles.item }
+              children={
+                <span style={{ marginTop: '15px', order: '3' }}>
+                  <a target='_blank' style={{ color: '#5F5F5F'}} href={this.state.map_url}>
+                    <img src={require('../images/map.png')} style={{ objectFit: 'contain', display: 'block', maxHeight: '100px' }}/>
+                  </a>
+                </span>
+              }
+              primaryText={ <span className="map__ttl"> Location </span> }
+              secondaryText={
+                <p style={{ color: '#5F5F5F'}} className="map__ttl"> 
+                  { this.state.location_text }
+                   Skalitzer Strasse 85, 10997 Berlin
+                </p>
+              }
+            />
+          </div>
 
           {/*<ListItem 
             leftIcon={getEtherIcon()} disabled={true}

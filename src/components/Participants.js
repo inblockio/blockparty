@@ -58,11 +58,24 @@ const styles = {
   btnAdmin: {
     height: '23px',
     borderRadius: '7px',
+    minWidth: '100px',
     color: '#fff',
     textTransform: 'uppercase',
     fontSize: '11px',
     backgroundColor: '#D0D0D0',
     lineHeight: '20px'
+  },
+
+  btnAttend: {
+    height: '23px',
+    borderRadius: '7px',
+    padding: '0 10px',
+    minWidth: '100px',
+    color: '#fff',
+    textTransform: 'uppercase',
+    fontSize: '11px',
+    backgroundColor: '#32A1E4',
+    lineHeight: '24px'
   },
 
   payoutBtn: {
@@ -328,8 +341,6 @@ class Participants extends React.Component {
 
       return this.state.participants.map( (participant, id) => {
 
-        console.log('this.state.participants ', this.state.participants )
-
         if(state.keyword && state.keyword.length >=3){
           let keyword = state.keyword.toLowerCase();
           participant.matched = !!(participant.name.match(keyword)) || !!(participant.address.match(keyword))
@@ -542,14 +553,14 @@ class Participants extends React.Component {
 
     let makeAdmin =  <FlatButton
         secondary={ true }
-        style={ styles.btnAdmin }
+        style={ styles.btnAttend }
         onClick={ this.handleAction.bind(this, 'grant') }
         children={ <span>Make admin</span> }
       />
 
     let markAttended =  <FlatButton
       secondary={ true }
-      style={ styles.btnAdmin }
+      style={ styles.btnAttend }
       onClick={ this.handleAction.bind(this, 'attend') }
       children={ <span>Mark attended</span> }
     />
@@ -598,7 +609,7 @@ class Participants extends React.Component {
           <div>
             <Typography variant="title" style={{ fontWeight: '400' }}>Admin</Typography>
             <div style={ styles.hint }>Metamask account recognised as admin</div>
-            <div style={{ marginBottom: '10px', textAlign: 'left' }}>{ this.state.participants.length } Registrations</div>
+            <div style={{ marginBottom: '10px', textAlign: 'left', paddingLeft: '25px'}}>{ this.state.participants.length } Registrations</div>
             {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
             <QRCode  eventEmitter={this.props.eventEmitter} />*/}
             <div style={{ position: 'relative' }}>
