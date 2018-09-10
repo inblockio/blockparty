@@ -121,12 +121,14 @@ class RegistrationForm extends React.Component {
         args.push(this.state.attendees);
         break;
       case 'register':
-        args.push(this.state.name);
-        break;
-      case 'registerWithEncryption':
-        args.push(this.state.name);
-        let encryptedData = cryptoBrowserify.publicEncrypt(this.state.detail.encryption, new Buffer(this.state.full_name, 'utf-8'));
-        args.push(encryptedData.toString('hex'));
+        if (this.state.allowTwitter) {
+          actionName = 'registerWithEncryption';
+          args.push("Encrypted");
+          let encryptedData = cryptoBrowserify.publicEncrypt(this.state.detail.encryption, new Buffer(this.state.name, 'utf-8'));
+          args.push(encryptedData.toString('hex'));
+        } else {
+          args.push(this.state.name);
+        }        
         break;
     }
     if(actionName == 'register' || actionName == 'registerWithEncryption'){
@@ -198,12 +200,6 @@ class RegistrationForm extends React.Component {
     });
   }
 
-  handleEncryptedField(e) {
-    this.setState({
-      full_name: e.target.value
-    });
-  }
-
   showRegisterInfo() {
     this.setState({ isRegisterInfo: !this.state.isRegisterInfo })
   }
@@ -235,45 +231,17 @@ class RegistrationForm extends React.Component {
         registerButton = <span>No more spots left</span>
 
       } else {
-
-        if (this.state.detail.encryption && this.showRegister()) {
-          var encryptionField =  <TextField
-                      floatingLabelText="Full name * (to be encrypted)"
-                      floatingLabelFixed={true}
-                      value={this.state.full_name}
-                      hintText="Full name (required)"
-                      onChange={this.handleEncryptedField.bind(this)}
-                      style={{margin:'0 5px'}}
-          />
-          var action = 'registerWithEncryption';
-
-        } else {
-          var action = 'register';
-        }
-
         registerButton = <RaisedButton primary={ this.showRegister() } disabled={ !this.showRegister() || !this.state.isChecked }
           label="register and deposit"
           className="btn registerBtn"
           style={{ backgroundColor: '#32A1E4' }}
-          onClick={this.handleAction.bind(this, action)}
+          onClick={this.handleAction.bind(this, 'register')}
         />
         warningText = <div style={{textAlign:'center', color:'red'}}>Please be aware that you <strong>cannot</strong> cancel once regiesterd. Please read FAQ section at ABOUT page on top right corner for more detail about this service.</div>
       }
     }else{
       registerButton = <span>No account is set</span>
     }
-
-
-    {/*if (this.showRegister()) {
-      var nameField = <TextField
-        placeholder="@twitter_handle (required)"
-        floatingLabelFixed={false}
-        value={this.state.name}
-        onChange={ this.handleName.bind(this) }
-        className="field field-name"
-        style={ styles.name }
-      />
-    }*/}
 
     var nameField = <TextField
       placeholder="@twitter_handle (required)"
@@ -285,13 +253,13 @@ class RegistrationForm extends React.Component {
     />
 
     var address = <TextField 
-            placeholder="@twitter_handle (required)"
-            value={ this.state.address }
-            floatingLabelFixed={false}
-            onChange={ this.handleSelect.bind(this) }
-            className="field field-address"
-            id="address"
-          />
+      placeholder="@twitter_handle (required)"
+      value={ this.state.address }
+      floatingLabelFixed={false}
+      onChange={ this.handleSelect.bind(this) }
+      className="field field-address"
+      id="address"
+    />
 
     return (
       <Card style = { styles.card } id="registration">
@@ -346,13 +314,14 @@ class RegistrationForm extends React.Component {
             </span>
 
             <div>
-                <div className="checkbox-custom">
-                  <input type="checkbox" id="submitting1" />
-                  <label htmlFor="submitting1" onChange={ this.twitterStatus }>Don’t list my Twitter name in the public participants list. (The admins will still see it)</label>
-                </div>
+              {this.state.detail.encryption &&
+                (<div className="checkbox-custom">
+                  <input type="checkbox" id="submitting1" onChange={ this.twitterStatus }/>
+                  <label htmlFor="submitting1" >Don’t list my Twitter name in the public participants list. (The admins will still see it)</label>
+                </div>)
+              }
                 <div className="checkbox-custom">
                   <input type="checkbox" id="submitting" onChange={ this.onChangeCheck } />
-                  {/* <label htmlFor="submitting" >* By submitting my details I agree to deposit ETH and in case I will not show up to the event my deposit will be distributed among all attendees. To be qualifed for the payout, I will be PHYSICALLY present at the venue by { this.state.detail.latest_date_to_come } at the latest!</label> */}
                   { this.termsText() }
                 </div>
             </div>

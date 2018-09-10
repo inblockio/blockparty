@@ -35,6 +35,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 import FlatButton from 'material-ui/FlatButton';
+import cryptoBrowserify from 'crypto-browserify';
+
 import $ from 'jquery';
 
 import "./stylesheets/app.css";
@@ -285,7 +287,13 @@ window.onload = function() {
     let watcher = async function(err, result) {
       if (result) {
         console.log('watchEvent result', result);
-        getParticipants(()=>{});
+        getParticipants(()=>{
+          let privKey = undefined;          
+          if (result.event == "RegisterEvent" && result.args['_encryption'] && privKey) {
+            let decryptedData = cryptoBrowserify.privateDecrypt(result.args['encryption'], privKey);
+            console.log("decrypted data: " + decryptedData);
+          }
+        });
       }
     }
     window.event.watch(watcher);
@@ -423,13 +431,13 @@ window.onload = function() {
                     getDetail={ getDetail }
                     action={ action }
                   />
-                  <FormInput
+                  {/* <FormInput
                     read_only={ read_only }
                     eventEmitter={ eventEmitter }
                     getAccounts={ getAccounts }
                     getDetail={ getDetail }
                     action={ action }
-                  />
+                  /> */}
                  </Grid>
               </Grid>
               <Grid container spacing={ 24 } justify="flex-start"  style={{padding: '0 20px'}}>
