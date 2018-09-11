@@ -24,6 +24,7 @@ const styles = {
 	headerRight: {
 		color: '#fff',
 		fontSize: '10px',
+    marginRight: '-2px'
 	},
 
 	btn: {
@@ -60,6 +61,7 @@ class Header extends React.Component {
     					<span
     						style={ styles.headerRight }
     						className="flex align-center"
+                
     					>
     						<span style={ styles.bull }></span>
     						<span>Ethereum Main Net</span>
