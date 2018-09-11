@@ -29,7 +29,7 @@ const styles = {
     color: '#32A1E4',
     fontSize: '13px',
     display: 'block',
-    marginBottom: '5px',
+    marginTop: '5px',
     textDecoration: 'none'
   },
 
@@ -251,8 +251,8 @@ class ConferenceDetail extends React.Component {
               style={ styles.item }
               children={
                 <div>
-                  <a href="https://developer.rchain.coop/conference" style={ styles.link }>https://developer.rchain.coop/conference</a>
                   <h5 style={ styles.ttl }>DESCRIPTION</h5>
+                  <a href="https://developer.rchain.coop/conference" style={ styles.link }>https://developer.rchain.coop/conference</a>
                   <p style={ styles.info } dangerouslySetInnerHTML={ {__html: this.state.description_text} } />
                 </div>
               }
