@@ -112,10 +112,14 @@ class TopBanner extends React.Component {
     } else if (this.canRegister()) {
       var availableSpots = this.state.detail.limitOfParticipants - this.state.detail.registered;
       if (availableSpots <= 0){
-        text = "Unfortunately no spots left";
+        text = "Unfortunately no spots left.";
       } else {
         text = "Register and get a chance to win ETH if someone misses the event!";
       }       
+    } else if (this.participantStatus() == "Withdrawn"){
+      text = "You've already withdrawn your prize.";
+    } else if (this.participantStatus() == "Lost"){
+      text = "You did not attend, your deposit is divided by the others.";
     } else {
       text = "You can not register anymore. Payouts start soon."
     }

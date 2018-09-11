@@ -261,7 +261,11 @@ class RegistrationForm extends React.Component {
       id="address"
     />
 
-    return (
+    if (!this.state.isRegisterInfo && !this.showRegister()) {
+      return (<div></div>);
+    }
+
+    return (      
       <Card style = { styles.card } id="registration">
         <form style={ styles.form }>
 

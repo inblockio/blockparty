@@ -19,7 +19,7 @@ contract GroupAdmin is Ownable {
     * @dev Grants admin right to given addresses.
     * @param newAdmins An array of addresses
     */
-    function grant(address[] newAdmins) public onlyOwner{
+    function grant(address[] newAdmins) public onlyAdmin {
         for(uint i = 0; i < newAdmins.length; i++){
             admins.push(newAdmins[i]);
             emit AdminGranted(newAdmins[i]);

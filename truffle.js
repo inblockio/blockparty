@@ -1,3 +1,5 @@
+var HDWalletProvider = require("truffle-hdwallet-provider");
+
 const yargs = require('yargs');
 var provider, address;
 
@@ -14,8 +16,21 @@ var provider, address;
 //   // console.log('Provider address', provider.getAddress());
 //   console.log('Deploying to ', providerURL);
 // }
+
+if (yargs.argv.network == 'rinkeby_infura') {
+  var mnemonic = "baby target remain dish kite lion hedgehog width clinic render dragon laugh";
+  var provider = new HDWalletProvider(mnemonic, 
+      "https://rinkeby.infura.io/v3/db3210de5a4a40fca2e8fdf5c3b2ea33", 
+      0)
+}
+
 module.exports = {
   networks: {
+    rinkeby_infura: {
+      provider: provider,
+      gasPrice: 50000000000, // 50 gwei,
+      network_id: 4
+    },
     development: {
       host: "localhost",
       port: 8545,
@@ -39,7 +54,7 @@ module.exports = {
     rinkeby: {
       host: "localhost",
       network_id: 4,
-      port: 8545,
+      port: 8101,
       gasPrice: 50000000000 // 50 gwei,
     },
     ropsten: {

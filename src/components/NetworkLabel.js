@@ -43,7 +43,7 @@ export default class Instruction extends React.Component {
     super(props);
     if(props.read_only) {
       this.state = {
-        color: 'white',
+        color: 'transparent',
         text: 'READONLY'
       };
     }else{

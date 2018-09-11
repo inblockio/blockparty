@@ -103,14 +103,15 @@ function setup() {
           console.log('Success')
         }else{
           console.log('The endspoint is not active. Falling back to read_only mode')
-          url = 'https://rinkeby.infura.io'
+          url = 'https://rinkeby.infura.io/v3/db3210de5a4a40fca2e8fdf5c3b2ea33'
           //  This only allows to pickup preference on the event list on top.
           if (Data[0].testnet){
-            url = 'https://rinkeby.infura.io'
+            url = 'https://rinkeby.infura.io/v3/db3210de5a4a40fca2e8fdf5c3b2ea33'
           }else{
-            url = 'https://mainnet.infura.io'
+            url = 'https://mainnet.infura.io/v3/db3210de5a4a40fca2e8fdf5c3b2ea33'
           }
-          read_only = true
+          alert("Metamask is not enabled. Please enable metamask.");
+          read_only = true          
         }
       }).always(function(){
         console.log('url', url)
@@ -118,9 +119,16 @@ function setup() {
         let web3 = new Web3;             // Define and instantiate `web3` if accessed from web browser
         console.log('Web3 is set', web3, provider)
         web3.setProvider(provider);
+        var resolved = false;
         web3.version.getNetwork(function(err, network_id){
           resolve({web3, provider, read_only, network_id})
         })
+
+        setTimeout(()=>{
+          if(!resolved) {
+            resolve({web3, provider, read_only, network_id: 4});
+          }
+        }, 1000);
       })
     }
   });
@@ -215,6 +223,7 @@ window.onload = function() {
             'date': metadata.date,
             'map_url': metadata.map_url,
             'location_text': metadata.location_text,
+            'location_sub_text': metadata.location_sub_text,
             'description_text': metadata.description_text,
             'withdraw_end_date': metadata.withdraw_end_date,
             'latest_date_to_come': metadata.latest_date_to_come
@@ -275,28 +284,76 @@ window.onload = function() {
             })
           }).then(participants => {
             if(participants) {
+              return mergeEncryptionWithParticipants(participants);              
+            }
+          }).then(participants => {
+            if(participants) {
               eventEmitter.emit('participants_updated', participants);
               window.participants = participants.length;
               callback(participants);
             }
-          })
+          });
         })
     }
 
-    window.event = contract.allEvents({fromBlock:0});
-    let watcher = async function(err, result) {
-      if (result) {
-        console.log('watchEvent result', result);
-        getParticipants(()=>{
-          let privKey = undefined;          
-          if (result.event == "RegisterEvent" && result.args['_encryption'] && privKey) {
-            let decryptedData = cryptoBrowserify.privateDecrypt(result.args['encryption'], privKey);
-            console.log("decrypted data: " + decryptedData);
-          }
+    function mergeEncryptionWithParticipants(participants) {
+      return new Promise(function(resolve, reject){
+        loadRegisterEvents(contract).then(({_, items}) => {
+          participants = participants.map(participant => {
+            for (let item in items) { 
+              if (items[item].addr == participant.address) {
+                let part = participant
+                part._encryption = items[item]._encryption;
+                return part;
+              }
+            }
+            return participant;
+          });
+          resolve(participants);
         });
-      }
+      });
+      
     }
-    window.event.watch(watcher);
+
+    function loadRegisterEvents(contract) {
+      return new Promise(function (resolve, reject){
+        contract.RegisterEvent({}, { fromBlock: 0, toBlock: 'latest' }).get((error, eventResult) => {        
+          if (error) {
+            return reject(error);
+          }
+          let blockNumber = 0;
+          const items = eventResult.map(arg => {
+            blockNumber = Math.max(arg.blockNumber, blockNumber);
+            return {addr: arg.args.addr, _encryption: arg.args._encryption}
+          }).filter(arg => {
+            return arg._encryption != ''
+          });
+          window.encryptions = items;
+          eventEmitter.emit('encryption_updated', items);
+          return resolve({
+            blockNumber,
+            items
+          })
+        });
+      });
+    }
+
+    if (contract) {
+      let this_window = window; 
+      loadRegisterEvents(contract).then(function({blockNumber, _}){
+        this_window.event = contract.allEvents({fromBlock:blockNumber, toBlock: 'latest'});
+        let watcher = async function(err, result) {
+          if (result) {
+            console.log('watchEvent result', result);
+            if (result.event == "RegisterEvent" && result.args['_encryption']) {
+              console.log("New encrypted user found");
+            }
+            getParticipants((participants)=>{ });
+          }
+        }
+        this_window.event.watch(watcher);
+      })
+    }
 
     var gas = 1000000;
     // default gas price

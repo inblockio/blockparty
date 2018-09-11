@@ -10,7 +10,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 let encryption = '';
 let config = {
-  // encryption: './tmp/test_public.key'
+  encryption: './tmp/test_public.key'
 };
 let name = ''; // empty name falls back to the contract default
 let deposit = 0; // 0 falls back to the contract default

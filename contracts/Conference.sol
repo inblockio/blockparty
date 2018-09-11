@@ -192,7 +192,7 @@ contract Conference is Destructible, GroupAdmin {
     /**
      * @dev Ends the event by owner
      */
-    function payback() external onlyOwner onlyActive{
+    function payback() external onlyAdmin onlyActive{
         payoutAmount = payout();
         ended = true;
         endedAt = now;
@@ -202,7 +202,7 @@ contract Conference is Destructible, GroupAdmin {
     /**
      * @dev Cancels the event by owner. When the event is canceled each participant can withdraw their deposit back.
      */
-    function cancel() external onlyOwner onlyActive{
+    function cancel() external onlyAdmin onlyActive{
         payoutAmount = deposit;
         cancelled = true;
         ended = true;
@@ -213,7 +213,7 @@ contract Conference is Destructible, GroupAdmin {
     /**
     * @dev The event owner transfer the outstanding deposits  if there are any unclaimed deposits after cooling period
     */
-    function clear() external onlyOwner onlyEnded{
+    function clear() external onlyAdmin onlyEnded{
         require(now > endedAt + coolingPeriod);
         uint leftOver = totalBalance();
         owner.transfer(leftOver);
@@ -224,7 +224,7 @@ contract Conference is Destructible, GroupAdmin {
      * @dev Change the capacity of the event. The owner can change it until event is over.
      * @param _limitOfParticipants the number of the capacity of the event.
      */
-    function setLimitOfParticipants(uint _limitOfParticipants) external onlyOwner onlyActive{
+    function setLimitOfParticipants(uint _limitOfParticipants) external onlyAdmin onlyActive{
         limitOfParticipants = _limitOfParticipants;
     }
 
@@ -232,7 +232,7 @@ contract Conference is Destructible, GroupAdmin {
      * @dev Change the name of the event. The owner can change it as long as no one has registered yet.
      * @param _name the name of the event.
      */
-    function changeName(string _name) external onlyOwner noOneRegistered{
+    function changeName(string _name) external onlyAdmin noOneRegistered{
         name = _name;
     }
 

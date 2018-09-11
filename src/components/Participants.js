@@ -16,7 +16,8 @@ import participantStatus from '../util/participantStatus';
 import NameSearch from './NameSearch';
 import QRCode from './QRCode';
 
-
+import FileReaderInput from 'react-file-reader-input';
+import cryptoBrowserify from 'crypto-browserify';
 
 import math from 'mathjs';
 import $ from 'jquery';
@@ -76,6 +77,18 @@ const styles = {
     fontSize: '11px',
     backgroundColor: '#32A1E4',
     lineHeight: '24px'
+  },
+
+  selectPrivKeyBtn: {
+    height: '42px',
+    width: '165px',
+    marginTop: '15px',
+    padding: '0 10px',
+    color: '#fff',
+    borderRadius: '7px',
+    backgroundColor: '#32A1E4',
+    textTransform: 'uppercase',
+    lineHeight: '42px'
   },
 
   payoutBtn: {
@@ -179,7 +192,8 @@ class Participants extends React.Component {
       detail:{},
       etherscan_url:null,
       showDetails: -1,
-      isPayoutInfo: false
+      isPayoutInfo: false,
+      privKey: null
     };
 
      this.showDetails = this.showDetails.bind(this);
@@ -187,10 +201,40 @@ class Participants extends React.Component {
      this.showPayoutInfo = this.showPayoutInfo.bind(this);
   }
 
+  handleLoadPrivKey(e, results) {
+    if (results.length > 0) {
+      const [event, _] = results[0];
+      const text = event.currentTarget.result;
+      if (text) {
+        this.setState({
+          privKey: text
+        });
+        this.decryptParticipants();
+      }
+    }
+  }
+
+  decryptParticipants() {
+    if (this.state.privKey) {
+      let privKey = this.state.privKey;
+      let decrypted = this.state.participants.map(participant => {
+        if (participant._encryption) {
+          let twitter = cryptoBrowserify.privateDecrypt(privKey, new Buffer(participant._encryption, 'hex'));
+          participant.name = twitter.toString("utf-8");
+        }
+        return participant;
+      });
+      this.setState({
+        participants: decrypted
+      });
+    }
+  }
+
   componentDidMount() {
     // Initialize
     this.props.getParticipants( participants =>{
       this.setState({ participants });
+      this.decryptParticipants();
     });
 
     this.props.eventEmitter.on( 'search', keyword => {
@@ -201,11 +245,13 @@ class Participants extends React.Component {
       console.log('CHANGE', _);
       this.props.getParticipants(participants =>{
         this.setState({ participants });
+        this.decryptParticipants();
       });
     });
 
     this.props.eventEmitter.on('participants_updated', participants => {
       this.setState({ participants })
+      this.decryptParticipants();
     });
 
     this.props.eventEmitter.on('accounts_received', accounts => {
@@ -551,6 +597,15 @@ class Participants extends React.Component {
 
     const numSelected = this.state.numSelected;
 
+    let loadPrivateKey = <FileReaderInput as="binary" id="my-file-input" onChange={this.handleLoadPrivKey.bind(this)}>
+      <FlatButton 
+        secondary={ true }
+        style={ styles.selectPrivKeyBtn }
+        children={ <span>Decrypt</span> }
+      />
+    </FileReaderInput>
+
+
     let makeAdmin =  <FlatButton
         secondary={ true }
         style={ styles.btnAttend }
@@ -610,13 +665,11 @@ class Participants extends React.Component {
             <Typography variant="title" style={{ fontWeight: '400' }}>Admin</Typography>
             <div style={ styles.hint }>Metamask account recognised as admin</div>
             <div style={{ marginBottom: '10px', textAlign: 'left', paddingLeft: '25px'}}>{ this.state.participants.length } Registrations</div>
-            {/*<NameSearch  eventEmitter={this.props.eventEmitter} />
-            <QRCode  eventEmitter={this.props.eventEmitter} />*/}
             <div style={{ position: 'relative' }}>
               <Table multiSelectable={ true } onRowSelection={ this.handleSelection.bind(this) }>
                 <TableHeader displaySelectAll={ true } enableSelectAll={ true } adjustForCheckbox={ true } style={{ border: 'none' }}>
                   <TableRow style={{ border: 'none' }}>
-                    <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin } { markAttended }</TableHeaderColumn>
+                    <TableHeaderColumn style={{ width: '58%'}} >{ makeAdmin } { markAttended } </TableHeaderColumn>
                     <TableHeaderColumn style={{ width: '20%'}} ></TableHeaderColumn>
                     <TableHeaderColumn style={{ width: '22%', textAlign: 'right'}} ></TableHeaderColumn>
                   </TableRow>
@@ -631,7 +684,8 @@ class Participants extends React.Component {
                 { showAll }
             </div>
             <div>{ payoutBtn }</div>
-            <div>{ canselEvent }</div>
+            <div>{ canselEvent }</div>   
+            <div>{ loadPrivateKey }</div>
           </div> : null }
           { this.showWithdraw() && (
           <div style={{ marginTop: '20px', position: 'relative' }}>
