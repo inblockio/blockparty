@@ -247,9 +247,9 @@ button:disabled {
       content: '';
       position: absolute;
       left: 1px;
-	    top: 5px;
+	    top: 4px;
 	    width: 16px;
-	    height: 15px;
+	    height: 16px;
       background-image: url("data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIxNyIgdmlld0JveD0iMCAwIDIwIDE3Ij4NCiAgICA8cGF0aCBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIGQ9Ik0xNy45OTIgMEwyMCAxLjgwNyA2Ljg1NyAxNi40MSAwIDkuMDI1bDEuOTgtMS44MzggNC44NDYgNS4yMnoiLz4NCjwvc3ZnPg0K");
       background-color: rgb(0, 188, 212);
       background-size: 92% 93%;
@@ -260,6 +260,12 @@ button:disabled {
       transition: all 0.2s linear 0s;
     }
 
+@media screen and (orientation: landscape)  {
+  .landscape {
+    max-width: 70%;
+    margin: auto !important;
+  }
+}
 @media (max-width: 960px) {
 	.xs-order-2 {
 		order: 2;
@@ -314,7 +320,7 @@ button:disabled {
 
 	.map-container a img {
 		max-height: none !important;
-		max-width: 100%;
+		max-width: 100% !important;
 		margin-top: 20px;
 	}
 

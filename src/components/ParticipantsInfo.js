@@ -20,7 +20,7 @@ const styles = {
   item: {
     display: 'flex',
     flexDirection: 'column',
-    padding: '22px 10px 10px 50px',
+    padding: '15px 10px 10px 50px',
   },
 
   card: {
@@ -37,6 +37,20 @@ const styles = {
     verticalAlign:'middle',
     backgroundColor: 'transparent'
   },
+
+  ttl: {
+    margin: '0 0 0 0',
+    color: '#000',
+    fontSize: '14px',
+    fontWeight: '500'
+  },
+
+  info: {
+     color: '#5F5F5F',
+     lineHeight: '1.5',
+     margin: '0 0 0 0',
+     fontSize: '13px'
+   },
 
   btnIcon: {
     position: 'relative',
@@ -292,50 +306,60 @@ class ParticipantsInfo extends React.Component {
             leftIcon = { getDepositIcon() }
             disabled = { true }
             style = { styles.item }
-            primaryText = {
-              <span>DEPOSIT </span>
+            children={
+              <div>
+                <h5 style={ styles.ttl }>DEPOSIT</h5>
+                <p style={ styles.info }>{ this.getDepositContent(this.state.detail) }</p>
+              </div>
             }
-            secondaryText = {this.getDepositContent(this.state.detail)}
           />
 
           <ListItem
             style = { styles.item }
             leftIcon = { getTotalPot() }
             disabled = { true }
-            primaryText = {
-              <span>TOTAL POT</span>
+            children={
+              <div>
+                <h5 style={ styles.ttl }>TOTAL POT</h5>
+                <p style={ styles.info }>{ this.getPotContent(this.state.detail) }</p>
+              </div>
             }
-
-            secondaryText = { this.getPotContent(this.state.detail) }
           />
 
           <ListItem
             style = { styles.item }
             leftIcon = { getTotalPerPerson() }
             disabled = {true}
-            primaryText = {
-              <span>TOTAL PAYOUT PER PERSON </span>
+            children={
+              <div>
+                <h5 style={ styles.ttl }>TOTAL PAYOUT PER PERSON</h5>
+                <p style={ styles.info }>{ this.getPayoutPerPersonContent(this.state.detail) }</p>
+              </div>
             }
-
-            secondaryText = { this.getPayoutPerPersonContent(this.state.detail) }
           />
 
           <ListItem
             style = { styles.item }
             leftIcon = { getPersons() }
             disabled = {true}
-            primaryText = {
-              <span>MAXIMUM AMOUNT OF REGISTRATIONs</span>
+            children={
+              <div>
+                <h5 style={ styles.ttl }>MAXIMUM AMOUNT OF REGISTRATIONs</h5>
+                <p style={ styles.info }>{ this.getMaxAttendeesContent(this.state.detail) }</p>
+              </div>
             }
-            secondaryText = { this.getMaxAttendeesContent(this.state.detail) }
           />
 
           <ListItem
             style = { styles.item }
             leftIcon = { getPersons() }
             disabled = {true}
-            primaryText = { this.getAmountOfAttendessTitle(this.state.detail) }
-            secondaryText = { this.getAmountOfAttendessContent(this.state.detail) }
+            children={
+              <div>
+                <h5 style={ styles.ttl }>{ this.getAmountOfAttendessTitle(this.state.detail) }</h5>
+                <p style={ styles.info }>{ this.getAmountOfAttendessContent(this.state.detail) }</p>
+              </div>
+            }
           />
 
           </List>

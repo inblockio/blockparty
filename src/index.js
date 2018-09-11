@@ -453,7 +453,7 @@ window.onload = function() {
               <Notification eventEmitter={ eventEmitter } />
 
               <Divider />
-              <Grid container spacing={ 24 } justify="space-between"  style={{padding: '0 20px'}}>
+              <Grid container spacing={ 24 } justify="space-between"  style={{padding: '0 20px'}} className="landscape">
 
                 <Grid item xs={ 12 } md={ 6 } className="xs-order-2">
                   <ParticipantsInfo

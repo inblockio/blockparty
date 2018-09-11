@@ -462,16 +462,16 @@ class Participants extends React.Component {
                     />
                   </IconButton>
                 </h4>
-                <div style={ styles.row } className="flex align-center justify-between">
-                  <span style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px' }}>Attended:</span>
+                <div style={ styles.row } className="flex align-center">
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px', minWidth: '100px', textAlign: 'left' }}>Attended:</span>
                   <span>{ this.yesNo(participant) }</span>
                 </div>
-                <div style={ styles.row } className="flex align-center justify-between">
-                  <span style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px' }}>Payout Status: </span>
+                <div style={ styles.row } className="flex align-center">
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px', minWidth: '100px', textAlign: 'left' }}>Payout Status: </span>
                   <span>{ this.displayBalance(participant) }</span>
                 </div>
-                <div style={ styles.row } className="flex align-center justify-between">
-                  <span  style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px' }}>Account:</span>
+                <div style={ styles.row } className="flex align-center">
+                  <span  style={{ fontSize: '12px', fontWeight: 'bold', paddingRight: '5px', minWidth: '100px', textAlign: 'left' }}>Account:</span>
                   <span style={{ color: '#32A1E4' }}>{ participant.address }</span>
                 </div>
               </div> : ''

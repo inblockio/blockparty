@@ -50,21 +50,22 @@ class Header extends React.Component {
     return (
       <header className="header"> 
         <AppBar
+          style={{ paddingRight: '10px' }}
           iconElementLeft = {
           	<span></span>
           }
           titleStyle={{textAlign:'center', fontSize:'0px', height: '0px'}}
           iconElementRight={
-            <span className="flex align-center">
+            <div className="flex align-center">
     					<span
     						style={ styles.headerRight }
-    						className="flex align-center mr-1"
+    						className="flex align-center"
     					>
     						<span style={ styles.bull }></span>
     						<span>Ethereum Main Net</span>
     					</span>
               <FlatButton style={ styles.btn } children={ <span>About</span> }/>
-            </span>
+            </div>
           }
         />
        <Typography

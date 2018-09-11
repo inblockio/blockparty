@@ -25,11 +25,33 @@ const styles = {
     padding: 10
   },
 
+  link: {
+    color: '#32A1E4',
+    fontSize: '13px',
+    display: 'block',
+    marginBottom: '5px',
+    textDecoration: 'none'
+  },
+
   list:{
     color: '#5F5F5F',
     merginHight:1,
 
   },
+
+  ttl: {
+    margin: '0 0 0 0',
+    color: '#000',
+    fontSize: '14px',
+    fontWeight: '500'
+  },
+
+  info: {
+     color: '#5F5F5F',
+     lineHeight: '1.5',
+     margin: '0 0 0 0',
+     fontSize: '13px'
+   },
 
   icon: {
     top: '12px',
@@ -213,9 +235,11 @@ class ConferenceDetail extends React.Component {
               leftIcon={ getCalendarIcon() }
               disabled={ true }
               style={ styles.item }
-              primaryText="TIME AND DATE"
-              secondaryText={
-                <p style={{ color: '#5F5F5F'}}> {this.getDateContent(this.state.date)}</p>
+              children={
+                <div>
+                  <h5 style={ styles.ttl }>TIME AND DATE</h5>
+                   <p style={ styles.info }>{ this.getDateContent(this.state.date) }</p>
+                </div>
               }
             />
           </div>
@@ -225,13 +249,12 @@ class ConferenceDetail extends React.Component {
               leftIcon={ getDescriptionIcon() }
               disabled={ true }
               style={ styles.item }
-              primaryText="DESCRIPTION"
-              secondaryText={
-                <p style={{ color: '#5F5F5F'}}>
-                  <span style={ styles.overflow }
-                    dangerouslySetInnerHTML={ {__html:this.state.description_text} }
-                  />
-                </p>
+              children={
+                <div>
+                  <a href="https://developer.rchain.coop/conference" style={ styles.link }>https://developer.rchain.coop/conference</a>
+                  <h5 style={ styles.ttl }>DESCRIPTION</h5>
+                  <p style={ styles.info } dangerouslySetInnerHTML={ {__html: this.state.description_text} } />
+                </div>
               }
 
               secondaryTextLines={ 2 }
@@ -244,17 +267,18 @@ class ConferenceDetail extends React.Component {
               disabled={true}
               style={ styles.item }
               children={
-                <span style={{ marginTop: '15px', order: '3' }}>
-                  <a target='_blank' style={{ color: '#5F5F5F'}} href={this.state.map_url}>
-                    <img src={require('../images/map.png')} style={{ objectFit: 'contain', display: 'block', maxHeight: '100px' }}/>
-                  </a>
-                </span>
-              }
-              primaryText={ <span className="map__ttl"> Location </span> }
-              secondaryText={
-                <p style={{ color: '#5F5F5F'}} className="map__ttl"> 
-                  { this.state.location_text } - { this.state.location_sub_text }
-                </p>
+                <div>
+                  <h5 className="map__ttl" style={ styles.ttl }> LOCATION </h5>
+                  <p style={ styles.info } className="map__ttl"> 
+                    <div>{ this.state.location_text }</div>
+                    <div>{ this.state.location_sub_text }</div>
+                  </p>
+                  <div style={{ marginTop: '15px', order: '3' }}>
+                    <a target='_blank' style={{ color: '#5F5F5F'}} href={this.state.map_url}>
+                      <img src={require('../images/map.png')} style={{ objectFit: 'contain', display: 'block', maxWidth: '100%' }}/>
+                    </a>
+                  </div>
+                </div>
               }
             />
           </div>
