@@ -266,6 +266,10 @@ button:disabled {
     max-width: 70%;
     margin: auto !important;
   }
+
+  .landscape--M {
+    max-width: 55%;
+  }
 }
 @media (max-width: 960px) {
 	.xs-order-2 {
