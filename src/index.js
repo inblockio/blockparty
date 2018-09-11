@@ -225,6 +225,7 @@ window.onload = function() {
             'location_text': metadata.location_text,
             'location_sub_text': metadata.location_sub_text,
             'description_text': metadata.description_text,
+            'description_link': metadata.description_link,
             'withdraw_end_date': metadata.withdraw_end_date,
             'latest_date_to_come': metadata.latest_date_to_come
           }

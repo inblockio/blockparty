@@ -252,7 +252,7 @@ class ConferenceDetail extends React.Component {
               children={
                 <div>
                   <h5 style={ styles.ttl }>DESCRIPTION</h5>
-                  <a href="https://developer.rchain.coop/conference" style={ styles.link }>https://developer.rchain.coop/conference</a>
+                  <a href={ this.state.description_link } style={ styles.link }>{ this.state.description_link }</a>
                   <p style={ styles.info } dangerouslySetInnerHTML={ {__html: this.state.description_text} } />
                 </div>
               }
