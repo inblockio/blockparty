@@ -145,7 +145,7 @@ class TopBanner extends React.Component {
 
   render() {
     return (
-      <div style={ styles.banner }>
+      <div style={ styles.banner } className="landscape landscape--M">
         <Typography variant="title" style={ styles.title }>
           { this.headerText() }
         </Typography>
